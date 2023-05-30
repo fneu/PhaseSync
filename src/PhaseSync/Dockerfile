@@ -7,10 +7,9 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["PhaseSync/PhaseSync.csproj", "PhaseSync/"]
-RUN dotnet restore "PhaseSync/PhaseSync.csproj"
+COPY ["PhaseSync.csproj", "./"]
+RUN dotnet restore "PhaseSync.csproj"
 COPY . .
-WORKDIR "/src/PhaseSync"
 RUN dotnet build "PhaseSync.csproj" -c Release -o /app/build
 
 FROM build AS publish
