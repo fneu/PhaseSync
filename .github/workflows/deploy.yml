@@ -1,0 +1,47 @@
+name: Build and Deploy to Google Compute Engine Instance
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GC_SERVICE_ACCOUNT_KEY }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: ">= 363.0.0"
+
+      - name: Authenticate Docker with Google Artifact Registry
+        run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
+
+      - name: Build Docker image
+        run: docker build -t "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.GC_PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/phasesync_image:latest" ./src/PhaseSync
+
+      - name: Delete old Docker images
+        continue-on-error: true
+        run: gcloud artifacts docker images delete "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.GC_PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/phasesync_image"
+
+      - name: Push Docker image to Google Artifact Registry
+        run: docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.GC_PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/phasesync_image:latest"
+
+      - name: Update container on Google Compute Engine Instance
+        run: gcloud compute instances update-container ${{ env.GCE_INSTANCE }} \
+            --zone ${{ env.GCE_ZONE }} \
+            --container-image "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.GC_PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/phasesync_image:latest" \
+            --container-restart-policy always
+
+      - name: Prune Docker system
+        run: gcloud compute ssh ${{ env.GCE_INSTANCE }} \
+            --zone ${{ env.GCE_ZONE }} \
+            --command "docker system prune -f -a"
