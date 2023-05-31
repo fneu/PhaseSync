@@ -25,5 +25,6 @@ jobs:
         with:
           version: '>= 363.0.0'
 
-      - name: Use gcloud CLI
-        run: gcloud info
+      - name: 'Docker auth'
+        run: |-
+        gcloud auth configure-docker ${{ secrets.GCE_INSTANCE_ZONE }}-docker.pkg.dev
