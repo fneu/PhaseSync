@@ -42,6 +42,7 @@ jobs:
           gcloud artifacts docker images delete "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/test"
 
       - name: 'push container'
+        run: |-
           docker push "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/test:latest"
 
       - name: Deploy
