@@ -29,16 +29,20 @@ jobs:
         run: |-
           gcloud auth configure-docker ${{ secrets.GAR_LOCATION }}-docker.pkg.dev
 
-      - name: 'Build and push container'
+      - name: 'Remove repository with prior builds'
         run: |-
-          docker build -t "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/${{ secrets.PROJECT_NAME }}:${{ github.sha }}" ./src/PhaseSync
-          docker push "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/${{ secrets.PROJECT_NAME }}:${{ github.sha }}"
+          gcloud artifacts repositories delete phasesync --project phasesync --location us-central1 --quiet
 
-      - name: "Docker prune"
-        run : |-
-          gcloud compute ssh ${{ secrets.GCE_INSTANCE }} \
-            --zone ${{ secrets.GCE_INSTANCE_ZONE }} \
-            --command 'docker system prune -f -a'
+      - name: 'Build container'
+        run: |-
+          docker build -t "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/test:latest" ./src/PhaseSync
+
+      - name: 'remove old images'
+        run: |-
+          gcloud artifacts docker images delete "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/test"
+
+      - name: 'push container'
+          docker push "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/test:latest"
 
       - name: Deploy
         run: |-
@@ -46,3 +50,10 @@ jobs:
             --zone ${{ secrets.GCE_INSTANCE_ZONE }} \
             --container-image "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/${{ secrets.PROJECT_NAME }}:${{ github.sha }}" \
             --container-restart-policy always
+
+      - name: "Docker prune"
+        run : |-
+          gcloud compute ssh ${{ secrets.GCE_INSTANCE }} \
+            --zone ${{ secrets.GCE_INSTANCE_ZONE }} \
+            --command 'docker system prune -f -a'
+
