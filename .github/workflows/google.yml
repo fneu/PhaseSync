@@ -27,4 +27,4 @@ jobs:
 
       - name: 'Docker auth'
         run: |-
-          gcloud auth configure-docker ${{ secrets.GCE_INSTANCE_ZONE }}-docker.pkg.dev
+          gcloud auth configure-docker ${{ secrets.GAR_LOCATION }}-docker.pkg.dev
