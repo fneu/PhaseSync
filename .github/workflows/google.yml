@@ -31,8 +31,8 @@ jobs:
 
       - name: 'Build and push container'
         run: |-
-          docker build -t "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/${{ secrets.PROJECT_NAME }}:${{ github.sha }}" ./src/PhaseSync
-          docker push "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/${{ secrets.PROJECT_NAME }}:${{ github.sha }}"
+          docker build -t "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/test:latest" ./src/PhaseSync
+          docker push "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/test:latest"
 
       - name: "Docker prune"
         run : |-
