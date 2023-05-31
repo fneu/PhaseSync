@@ -29,10 +29,6 @@ jobs:
         run: |-
           gcloud auth configure-docker ${{ secrets.GAR_LOCATION }}-docker.pkg.dev
 
-      - name: 'Remove repository with prior builds'
-        run: |-
-          gcloud artifacts repositories delete phasesync --project phasesync --location us-central1 --quiet
-
       - name: 'Build container'
         run: |-
           docker build -t "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/test:latest" ./src/PhaseSync
