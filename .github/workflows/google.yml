@@ -33,3 +33,10 @@ jobs:
         run: |-
           docker build -t "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/${{ secrets.PROJECT_NAME }}:${{ github.sha }}" ./src/PhaseSync
           docker push "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/${{ secrets.PROJECT_NAME }}:${{ github.sha }}"
+
+      - name: Deploy
+        run: |-
+          gcloud compute instances update-container ${{ secrets.GCE_INSTANCE }} \
+            --zone ${{ secrets.GCE_INSTANCE_ZONE }} \\
+            --container-image "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.REPO_NAME }}/${{ secrets.PROJECT_NAME }}/${{ secrets.PROJECT_NAME }}:${{ github.sha }}" \
+            --container-restart-policy on-failure
