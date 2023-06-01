@@ -23,25 +23,25 @@ jobs:
           version: ">= 363.0.0"
 
       - name: Authenticate Docker with Google Artifact Registry
-        run: gcloud auth configure-docker $GAR_LOCATION-docker.pkg.dev
+        run: gcloud auth configure-docker ${{ vars.GAR_LOCATION }}-docker.pkg.dev
 
       - name: Build Docker image
-        run: docker build -t "$GAR_LOCATION -docker.pkg.dev/$GC_PROJECT_ID/$GAR_REPOSITORY/phasesync_image:latest" ./src/PhaseSync
+        run: docker build -t "${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.GC_PROJECT_ID }}/${{ vars.GAR_REPOSITORY }}/phasesync_image:latest" ./src/PhaseSync
 
       - name: Delete old Docker images
         continue-on-error: true
-        run: gcloud artifacts docker images delete "$GAR_LOCATION-docker.pkg.dev/$GC_PROJECT_ID/$GAR_REPOSITORY/phasesync_image"
+        run: gcloud artifacts docker images delete "${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.GC_PROJECT_ID }}/${{ vars.GAR_REPOSITORY }}/phasesync_image"
 
       - name: Push Docker image to Google Artifact Registry
-        run: docker push "$GAR_LOCATION-docker.pkg.dev/$GC_PROJECT_ID/$GAR_REPOSITORY/phasesync_image:latest"
+        run: docker push "${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.GC_PROJECT_ID }}/${{ vars.GAR_REPOSITORY }}/phasesync_image:latest"
 
       - name: Update container on Google Compute Engine Instance
-        run: gcloud compute instances update-container $GCE_INSTANCE \
-            --zone $GCE_ZONE \
-            --container-image "$GAR_LOCATION-docker.pkg.dev/$GC_PROJECT_ID/$GAR_REPOSITORY/phasesync_image:latest" \
+        run: gcloud compute instances update-container ${{ vars.GCE_INSTANCE }} \
+            --zone ${{ vars.GCE_ZONE }} \
+            --container-image "${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.GC_PROJECT_ID }}/${{ vars.GAR_REPOSITORY }}/phasesync_image:latest" \
             --container-restart-policy always
 
       - name: Prune Docker system
-        run: gcloud compute ssh $GCE_INSTANCE \
-            --zone $GCE_ZONE \
+        run: gcloud compute ssh ${{ vars.GCE_INSTANCE }} \
+            --zone ${{ vars.GCE_ZONE }} \
             --command "docker system prune -f -a"
