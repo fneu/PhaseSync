@@ -41,19 +41,43 @@ At this point, it makes sense to run the deploy github action.
 It will not complete, as there is no virtual machine instance
 to run as of yet. However, the docker image should be built and pushed now.
 
-## Create container optimized VM in Compute Engine:
+## Create an instance group and instance template
 
-- name: save this in the `GCE_INSTANCE` variable
-- region: save this in the `GCE_ZONE` variable
-- create e2-micro instance, which is within the free tier
-- container: choose the image that was just pushed
-- boot drive: should be container optimized os
-- enable http traffic in firewall settings
+- group:
+    - single instance (min=1, max=1)
+    - no autoscaling
+    - ports: add port 80
+- instance template:
+    - zone: save this in the `GCE_ZONE` variable
+    - create e2-micro instance, which is within the free tier
+    - container: choose the image that was just pushed
+    - boot drive:
+        - should be container optimized os
+        - do not delete if the instance is deleted
+    - reserve static ip address in network settings
+    - enable http traffic in firewall settings-
 
+- Save the name of the created instance in the `GCE_INSTANCE` variable
+
+## Load Balancing
+
+The load balancer can take care of ssl certificates for us.
+Create a hew global https load balancer
+
+- front-end:
+    - protocol: https
+    - ip: static
+    - certificate: new, make sure DNS A entry of the domain points to static ip just chosen.
+    - http-to-https: yes
+- back-end:
+    - protocol: http
+    - instance-group: chose previously created instance group and it's named port 80
+    - diagnose: chose port 80
+
+34.107.246.112
 ## Push new containers
 
 At this point, the site should be available via http
 at the IP address of the gce instance.
 The deploy github action should succeed
 and changes should be applied.
-
