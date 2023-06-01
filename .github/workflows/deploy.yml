@@ -43,6 +43,7 @@ jobs:
             --container-restart-policy always
 
       - name: Prune Docker system
-        run: gcloud compute ssh ${{ vars.GCE_INSTANCE }} \
+        run: |-
+          gcloud compute ssh ${{ vars.GCE_INSTANCE }} \
             --zone ${{ vars.GCE_ZONE }} \
             --command "docker system prune -f -a"
