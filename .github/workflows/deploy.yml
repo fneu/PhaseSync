@@ -36,7 +36,8 @@ jobs:
         run: docker push "${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.GC_PROJECT_ID }}/${{ vars.GAR_REPOSITORY }}/phasesync_image:latest"
 
       - name: Update container on Google Compute Engine Instance
-        run: gcloud compute instances update-container ${{ vars.GCE_INSTANCE }} \
+        run: |-
+          gcloud compute instances update-container ${{ vars.GCE_INSTANCE }} \
             --zone ${{ vars.GCE_ZONE }} \
             --container-image "${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.GC_PROJECT_ID }}/${{ vars.GAR_REPOSITORY }}/phasesync_image:latest" \
             --container-restart-policy always
