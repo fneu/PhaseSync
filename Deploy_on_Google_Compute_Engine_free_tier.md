@@ -41,6 +41,12 @@ At this point, it makes sense to run the deploy github action.
 It will not complete, as there is no virtual machine instance
 to run as of yet. However, the docker image should be built and pushed now.
 
+## Create a new disk
+- 10 GB size (minimum, free)
+- create temporary instance and attach disk as read/write
+- format with `sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/DEVICE_NAME`
+ 
+
 ## Create an instance group and instance template
 
 - group:
@@ -52,15 +58,21 @@ to run as of yet. However, the docker image should be built and pushed now.
     - create e2-micro instance, which is within the free tier
     - container: 
         - choose the image that was just pushed
-        - add some volume. For example, mount `/tmp/data/` from the host as `/data/` in the
-          container with read/write permissions
-        - set the `PHASESYNC_DB_CONNECTION` environment variable to the path of the database file.
-          This should be a file path inside the volume
+        - reboot: on-failure
+        - set the `PHASESYNC_DB_CONNECTION` environment variable to `DataSource=/data/app.db;Cache=Shared`
+        - volume: mount `/mnt/disks/data/` from the host as `/data/` in the container
     - boot drive:
         - should be container optimized os
-        - do not delete if the instance is deleted
-    - reserve static ip address in network settings
+        - delete if the instance is deleted
     - enable http traffic in firewall settings
+    - drives: add previously created 10G drive
+    - start script:
+        ```
+        #! /bin/bash
+        sudo mkdir -p /mnt/disks/data
+        sudo mount -o discard,defaults /dev/sdb /mnt/disks/data
+        sudo chmod a+w /mnt/disks/data
+        ```
 
 - Save the name of the created instance in the `GCE_INSTANCE` variable
 
