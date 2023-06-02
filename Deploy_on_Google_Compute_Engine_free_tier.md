@@ -52,8 +52,10 @@ to run as of yet. However, the docker image should be built and pushed now.
     - create e2-micro instance, which is within the free tier
     - container: 
         - choose the image that was just pushed
-        - add some volume for `/data/`. For example, mount `/tmp/data/` from the host as `/data/` in the
+        - add some volume. For example, mount `/tmp/data/` from the host as `/data/` in the
           container with read/write permissions
+        - set the `PHASESYNC_DB_CONNECTION` environment variable to the path of the database file.
+          This should be a file path inside the volume
     - boot drive:
         - should be container optimized os
         - do not delete if the instance is deleted
