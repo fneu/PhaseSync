@@ -50,12 +50,17 @@ to run as of yet. However, the docker image should be built and pushed now.
 - instance template:
     - zone: save this in the `GCE_ZONE` variable
     - create e2-micro instance, which is within the free tier
-    - container: choose the image that was just pushed
+    - container: 
+        - choose the image that was just pushed
+        - add some volume. For example, mount `/mnt/` from the host as `/data/` in the
+          container with read/write permissions
+        - add the `ConfigurationStrings__DefaultConnection1` environment variable and set it to
+          something like `DataSource=/data/app.db;Cache=Shared` to make the db persistent
     - boot drive:
         - should be container optimized os
         - do not delete if the instance is deleted
     - reserve static ip address in network settings
-    - enable http traffic in firewall settings-
+    - enable http traffic in firewall settings
 
 - Save the name of the created instance in the `GCE_INSTANCE` variable
 
