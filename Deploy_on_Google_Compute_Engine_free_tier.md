@@ -52,10 +52,8 @@ to run as of yet. However, the docker image should be built and pushed now.
     - create e2-micro instance, which is within the free tier
     - container: 
         - choose the image that was just pushed
-        - add some volume. For example, mount `/mnt/` from the host as `/data/` in the
+        - add some volume for `/data/`. For example, mount `/tmp/data/` from the host as `/data/` in the
           container with read/write permissions
-        - add the `ConfigurationStrings__DefaultConnection1` environment variable and set it to
-          something like `DataSource=/data/app.db;Cache=Shared` to make the db persistent
     - boot drive:
         - should be container optimized os
         - do not delete if the instance is deleted
