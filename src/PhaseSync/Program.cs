@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using PhaseSync.Areas.Identity;
 using PhaseSync.Data;
+using MudBlazor.Services;
 
 namespace PhaseSync
 {
@@ -14,6 +16,8 @@ namespace PhaseSync
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
             // Add services to the container.
             var connectionString = Environment.GetEnvironmentVariable("PHASESYNC_DB_CONNECTION") ?? builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -26,6 +30,7 @@ namespace PhaseSync
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddMudServices();
 
             var app = builder.Build();
 
@@ -55,7 +60,6 @@ namespace PhaseSync
 
             app.UseAuthorization();
 
-            app.MapControllers();
             app.MapBlazorHub();
             app.MapFallbackToPage("/_Host");
 
