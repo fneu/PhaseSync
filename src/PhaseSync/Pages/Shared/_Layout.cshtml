@@ -32,7 +32,7 @@
 	@(await Html.RenderComponentAsync<MudThemeProvider>(RenderMode.Static))
 </head>
 <body>
-	@(await Html.RenderComponentAsync<MudAppBar>(RenderMode.Static))
+	@(await Html.RenderComponentAsync<MyAppBar>(RenderMode.ServerPrerendered))
 
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
