@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Hosting
 @using Microsoft.AspNetCore.Mvc.ViewEngines
 @using MudBlazor;
-@using PhaseSync.Pages;
+@using PhaseSync.Shared;
 @inject IWebHostEnvironment Environment
 @inject ICompositeViewEngine Engine
 <!DOCTYPE html>
@@ -30,9 +30,12 @@
 	<script defer src="_content/MudBlazor/MudBlazor.min.js"></script>
 	<link rel="stylesheet" href="~/WebApplication3.styles.css" asp-append-version="true"/>
 	@(await Html.RenderComponentAsync<MudThemeProvider>(RenderMode.Static))
+    <component type="typeof(MudThemeProvider)" render-mode="Static", param-Theme="@(new MudTheme(){Palette = new Palette() {Primary = Colors.Teal.Default, Secondary = Colors.Pink.Accent3, AppbarBackground= Colors.Teal.Default}})" />
+    <component type="typeof(MudDialogProvider)" render-mode="Static" />
+    <component type="typeof(MudSnackbarProvider)" render-mode="Static" />
 </head>
 <body>
-	@(await Html.RenderComponentAsync<MyAppBar>(RenderMode.ServerPrerendered))
+	@(await Html.RenderComponentAsync<LoginAppBar>(RenderMode.ServerPrerendered))
 
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
