@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using PhaseSync.Areas.Identity;
 using PhaseSync.Data;
 using MudBlazor.Services;
+using PhaseSync.Options;
 
 namespace PhaseSync
 {
@@ -17,12 +18,9 @@ namespace PhaseSync
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
-
             // Add services to the container.
-            var connectionString = Environment.GetEnvironmentVariable("PHASESYNC_DB_CONNECTION") ?? builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(connectionString));
+                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -30,6 +28,8 @@ namespace PhaseSync
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddScoped<HiveService>();
+            builder.Services.Configure<HiveServiceOptions>(builder.Configuration.GetSection("Hive"));
             builder.Services.AddMudServices();
 
             var app = builder.Build();

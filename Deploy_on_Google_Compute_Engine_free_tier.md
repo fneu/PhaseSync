@@ -43,6 +43,7 @@ to run as of yet. However, the docker image should be built and pushed now.
 
 ## Create a new disk
 - 10 GB size (minimum, free)
+- standard persistent disk
 - create temporary instance and attach disk as read/write
 - format with `sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/DEVICE_NAME`
  
@@ -59,11 +60,13 @@ to run as of yet. However, the docker image should be built and pushed now.
     - container: 
         - choose the image that was just pushed
         - reboot: on-failure
-        - set the `PHASESYNC_DB_CONNECTION` environment variable to `DataSource=/data/app.db;Cache=Shared`
+        - set the `ConnectionStrings__DefaultConnection` environment variable to `DataSource=/data/app.db;Cache=Shared`
+        - set the `Hive__Directory` environment variable to `/data/hive`
         - volume: mount `/mnt/disks/data/` from the host as `/data/` in the container
     - boot drive:
         - should be container optimized os
         - delete if the instance is deleted
+        - make sure it's standard persistent disk
     - enable http traffic in firewall settings
     - drives: add previously created 10G drive
     - start script:

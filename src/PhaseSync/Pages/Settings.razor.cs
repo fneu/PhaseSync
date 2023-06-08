@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using PhaseSync.Data;
 
 namespace PhaseSync.Pages
 {
@@ -9,7 +10,11 @@ namespace PhaseSync.Pages
         [Inject]
         public AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
+        [Inject]
+        public HiveService HiveService { get; set; } = default!;
+
         public string UserID { get; set; } = "initial";
+        public string HiveID { get; set; } = "initial";
 
         protected async override Task OnInitializedAsync()
         {
@@ -20,6 +25,7 @@ namespace PhaseSync.Pages
                 return;
             }
             UserID = authstate.User.Claims.First().Value;
+            HiveID = await HiveService.GetUserID();
         }
     }
 }
