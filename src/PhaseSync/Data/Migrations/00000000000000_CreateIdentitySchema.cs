@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace PhaseSync.Data.Migrations
+namespace PhaseSync.Blazor.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

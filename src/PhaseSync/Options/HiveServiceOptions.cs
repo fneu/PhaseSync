@@ -1,4 +1,4 @@
-﻿namespace PhaseSync.Options
+﻿namespace PhaseSync.Blazor.Options
 {
     public sealed class HiveServiceOptions
     {

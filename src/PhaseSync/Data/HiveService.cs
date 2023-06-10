@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Options;
-using PhaseSync.Options;
+using PhaseSync.Blazor.Options;
 
-namespace PhaseSync.Data
+namespace PhaseSync.Blazor.Data
 {
     public sealed class HiveService
     {

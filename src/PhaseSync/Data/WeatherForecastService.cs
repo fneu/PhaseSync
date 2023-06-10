@@ -1,4 +1,4 @@
-namespace PhaseSync.Data
+namespace PhaseSync.Blazor.Data
 {
     public class WeatherForecastService
     {

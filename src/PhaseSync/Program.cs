@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
-using PhaseSync.Areas.Identity;
-using PhaseSync.Data;
+using PhaseSync.Blazor.Areas.Identity;
+using PhaseSync.Blazor.Data;
 using MudBlazor.Services;
-using PhaseSync.Options;
+using PhaseSync.Blazor.Options;
 
 namespace PhaseSync
 {

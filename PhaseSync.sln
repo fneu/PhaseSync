@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhaseSync.App", "src\PhaseSync\PhaseSync.App.csproj", "{2D30F7D4-CFD3-44C4-9F08-680F2B77DE17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhaseSync.Blazor", "src\PhaseSync\PhaseSync.Blazor.csproj", "{2D30F7D4-CFD3-44C4-9F08-680F2B77DE17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhaseSync.Core", "src\PhaseSync.Core\PhaseSync.Core.csproj", "{C688FF9E-DD24-464B-9F7A-B4E2E7A3E4EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhaseSync.Core", "src\PhaseSync.Core\PhaseSync.Core.csproj", "{C688FF9E-DD24-464B-9F7A-B4E2E7A3E4EF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{5EB496F7-8A50-4579-846C-1D145DE3D488}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.PhaseSync.Core", "tests\Test.PhaseSync.Core\Test.PhaseSync.Core.csproj", "{ACB87DCA-00C8-426E-A5AA-3CE23ACB0DE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.PhaseSync.Core", "tests\Test.PhaseSync.Core\Test.PhaseSync.Core.csproj", "{ACB87DCA-00C8-426E-A5AA-3CE23ACB0DE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

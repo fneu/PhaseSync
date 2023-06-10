@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "PhaseSync": {
+    "PhaseSync.Blazor": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

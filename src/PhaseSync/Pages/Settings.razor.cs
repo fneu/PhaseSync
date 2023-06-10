@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using PhaseSync.Data;
+using PhaseSync.Blazor.Data;
 
-namespace PhaseSync.Pages
+namespace PhaseSync.Blazor.Pages
 {
 
     public partial class Settings : ComponentBase
