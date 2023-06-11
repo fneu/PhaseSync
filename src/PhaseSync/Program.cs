@@ -29,7 +29,7 @@ namespace PhaseSync
             builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddScoped<HiveService>();
-            builder.Services.Configure<HiveServiceOptions>(builder.Configuration.GetSection("Hive"));
+            builder.Services.Configure<PhaseSyncOptions>(builder.Configuration.GetSection("Hive"));
             builder.Services.AddMudServices();
 
             var app = builder.Build();

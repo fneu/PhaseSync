@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Options;
 using PhaseSync.Blazor.Data;
+using PhaseSync.Blazor.Options;
 
 namespace PhaseSync.Blazor.Pages
 {
@@ -12,6 +14,9 @@ namespace PhaseSync.Blazor.Pages
 
         [Inject]
         public HiveService HiveService { get; set; } = default!;
+
+        [Inject]
+        public IOptions<PhaseSyncOptions> PhaseSyncOptions { get; set; }
 
         public string UserID { get; set; } = "initial";
         public string HiveID { get; set; } = "initial";
@@ -25,7 +30,7 @@ namespace PhaseSync.Blazor.Pages
                 return;
             }
             UserID = authstate.User.Claims.First().Value;
-            HiveID = await HiveService.GetUserID();
+            HiveID = PhaseSyncOptions.Value.PasswordEncryptionSecret;
         }
     }
 }
