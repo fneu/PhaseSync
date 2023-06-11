@@ -29,11 +29,5 @@ namespace PhaseSync.Blazor.Data
                 return new RamHive("");
             }
         }
-
-        public string PasswordEncryptionSecret()
-        {
-            return options.PasswordEncryptionSecret;
-        }
-
     }
 }

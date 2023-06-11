@@ -72,6 +72,16 @@ namespace Test.PhaseSync.Core.Entity.Settings
         }
 
         [Fact]
+        public void DeletesTaoToken()
+        {
+            var token = "";
+            var settings = new SettingsOf(new RamHive(TESTUSERID));
+            settings.Update(new TaoToken(token));
+
+            Assert.False(new TaoToken.Has(settings).Value());
+        }
+
+        [Fact]
         public void StoresZoneMas()
         {
             var mas = 3.4;

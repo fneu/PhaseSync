@@ -1,0 +1,10 @@
+﻿@page "/auth/trainasone"
+@attribute [Authorize]
+<h3>TrainAsONE Authorization in progress...</h3>
+
+@if (!string.IsNullOrEmpty(Error))
+{
+    <MudAlert Severity="Severity.Error">
+        @Error
+    </MudAlert>
+}

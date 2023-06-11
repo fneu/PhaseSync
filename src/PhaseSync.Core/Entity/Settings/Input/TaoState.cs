@@ -3,18 +3,18 @@ using Yaapii.Atoms.Scalar;
 
 namespace PhaseSync.Core.Entity.Settings.Input
 {
-    public sealed class TaoToken : EntityInputEnvelope<IProps>
+    public sealed class TaoState : EntityInputEnvelope<IProps>
     {
-        private const string KEY = "tao.token";
+        private const string KEY = "tao.state";
 
-        public TaoToken(string value) : base(
+        public TaoState(string value) : base(
             (props) => props.Refined(KEY, value))
         { }
 
         public sealed class Has : ScalarEnvelope<bool>
         {
             public Has(IEntity<IProps> settings) : base(
-               () => settings.Memory().Names().Contains(KEY) && !string.IsNullOrEmpty(settings.Memory().Value(KEY))
+               () => settings.Memory().Names().Contains(KEY)
             )
             { }
         }

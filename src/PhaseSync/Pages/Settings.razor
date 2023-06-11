@@ -1,9 +1,87 @@
 ﻿@page "/settings"
+@using System.ComponentModel.DataAnnotations;
 @attribute [Authorize]
 
-<p>
-AuthenticationStateProvider: @UserID
-</p>
-<p>
-HiveService: @HiveID
-</p>
+<h1>Settings</h1>
+
+<MudGrid Class="justify-center">
+    <MudItem xs="12" md="7">
+        <MudExpansionPanels>
+            <MudExpansionPanel>
+                <TitleContent>
+                    <div class="d-flex">
+                        <MudIcon 
+                            Class="mr-3"
+                            Icon="@(TAOConnected ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Warning)"
+                            Color="@(TAOConnected? Color.Primary : Color.Error)"/>
+                        <MudText>TrainAsONE</MudText>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    @if (TAOConnected)
+                    {
+                        <MudAlert Severity="Severity.Success">
+                            API Access granted!
+                       </MudAlert>
+                        <MudStack Row=true Class="justify-space-between pt-4">
+                            <MudText></MudText>
+                            <MudButton Color="Color.Error" OnClick="@RemoveTAO">Disconnect</MudButton>
+                        </MudStack>
+                    }
+                    else
+                    {
+                    <MudAlert Severity="Severity.Info">
+                        You can grant access to your TrainAsONE Workouts via OAuth2 API.
+                   </MudAlert>
+                        <MudStack Row=true Class="justify-space-between pt-4">
+                            <MudText></MudText>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@AuthorizeTAO">Connect</MudButton>
+                        </MudStack>
+                    }
+                </ChildContent>
+            </MudExpansionPanel>
+            <MudExpansionPanel>
+                <TitleContent>
+                    <div class="d-flex">
+                        <MudIcon 
+                            Class="mr-3"
+                            Icon="@(PolarConnected ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Warning)"
+                            Color="@(PolarConnected? Color.Primary : Color.Error)"/>
+                        <MudText>Polar Flow</MudText>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    <MudAlert Severity="Severity.Warning">
+                        Storing Passwords is obviously not a great idea,
+                        but Polar does not provide a way to create phased workouts via an API.
+                        Therefore, we need to store your password in order to create workouts on your behalf.
+                        Your password will be encrypted before being stored.
+                   </MudAlert>
+                    <MudForm @bind-IsValid="@PolarFormValid">
+                        <MudTextField
+                            T="string"
+                            Label="Email"
+                            Required="true"
+                            RequiredError="Email is required!"
+                            Class="mt-3" 
+                            @bind-Value="@PolarEmail"
+                            Validation="@(new EmailAddressAttribute() {ErrorMessage="The email address is invalid"})" />
+                        <MudTextField 
+                            T="string" 
+                            Label="Password" 
+                            Required="true" 
+                            RequiredError="Password is required!" 
+                            Class="mt-3"
+                            InputType="InputType.Password"/>
+                        <MudStack Row=true Class="justify-space-between pt-4">
+                            <MudText></MudText>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!PolarFormValid)" Class="ml-auto">Save credentials</MudButton>
+                        </MudStack>
+
+                    </MudForm>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+
+    </MudItem>
+</MudGrid>
