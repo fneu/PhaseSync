@@ -1,0 +1,14 @@
+﻿@page "/nextworkout"
+@attribute [Authorize]
+<h3>NextWorkout</h3>
+@if (TAOConnected)
+{
+    @Workout
+    
+} else
+{
+    <MudAlert Severity="Severity.Error">
+        It looks like you have not yet granted PhaseSync access to your TrainAsONE Workouts.
+        Please fix this in the <MudLink Href="/settings" Typo="Typo.body2" Color="Color.Inherit"><b>settings</b></MudLink>.
+    </MudAlert>
+}
