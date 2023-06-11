@@ -27,7 +27,6 @@ namespace PhaseSync
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddScoped<HiveService>();
             builder.Services.Configure<PhaseSyncOptions>(builder.Configuration.GetSection("PhaseSync"));
             builder.Services.AddMudServices();
