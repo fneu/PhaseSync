@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Datum\economy.json" />
+    <None Remove="Datum\interval.json" />
+    <None Remove="Datum\progression.json" />
+    <None Remove="Datum\race.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Datum\economy.json" />
+    <EmbeddedResource Include="Datum\interval.json" />
+    <EmbeddedResource Include="Datum\progression.json" />
+    <EmbeddedResource Include="Datum\race.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Yaapii.Atoms" Version="3.0.0" />
+  </ItemGroup>
+
+</Project>

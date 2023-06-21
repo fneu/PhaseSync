@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.PhaseSync.Core", "tests\Test.PhaseSync.Core\Test.PhaseSync.Core.csproj", "{ACB87DCA-00C8-426E-A5AA-3CE23ACB0DE1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.PhaseSync.Datum", "tests\Test.PhaseSync.Datum\Test.PhaseSync.Datum.csproj", "{6B342D65-6BCA-4899-9AA2-852C5691B013}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,12 +31,17 @@ Global
 		{ACB87DCA-00C8-426E-A5AA-3CE23ACB0DE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACB87DCA-00C8-426E-A5AA-3CE23ACB0DE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACB87DCA-00C8-426E-A5AA-3CE23ACB0DE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B342D65-6BCA-4899-9AA2-852C5691B013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B342D65-6BCA-4899-9AA2-852C5691B013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B342D65-6BCA-4899-9AA2-852C5691B013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B342D65-6BCA-4899-9AA2-852C5691B013}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{ACB87DCA-00C8-426E-A5AA-3CE23ACB0DE1} = {5EB496F7-8A50-4579-846C-1D145DE3D488}
+		{6B342D65-6BCA-4899-9AA2-852C5691B013} = {5EB496F7-8A50-4579-846C-1D145DE3D488}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2640C139-92E4-4554-A511-FF138069A836}

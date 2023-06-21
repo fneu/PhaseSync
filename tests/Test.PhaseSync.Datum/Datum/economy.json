@@ -1,0 +1,70 @@
+{
+  "activityType": "RUN",
+  "activitySubType": "TRAINING_ECONOMY",
+  "duration": 2580,
+  "distance": 7071.12358668439,
+  "velocity": 2.74074557623426,
+  "physiologicalLoad": 14.678953045469097,
+  "doNotAdjust": false,
+  "temperature": 20.9,
+  "undulation": 3.3229739279222965,
+  "workoutSteps": [
+    {
+      "workoutStepType": "WARMUP",
+      "duration": 300,
+      "distance": 772.5175229003389,
+      "velocity": 2.5750584096677964,
+      "velocityRangeMin": 2.4899741020053145,
+      "velocityRangeMax": 2.62381917237607,
+      "heartRateTarget": 139,
+      "heartRateRangeMin": 131,
+      "heartRateRangeMax": 146,
+      "showDistance": true,
+      "showDuration": true,
+      "showHeartRate": true,
+      "showVelocity": true,
+      "velocityMaxTarget": false,
+      "flexible": false,
+      "multiple": 1,
+      "preferredWorkoutStepEnd": "DURATION",
+      "preferredWorkoutStepTarget": "SPEED"
+    },
+    {
+      "workoutStepType": "EASY",
+      "duration": 2280,
+      "distance": 6298.606063784051,
+      "velocity": 2.7625465192035312,
+      "velocityRangeMin": 2.679670123627425,
+      "velocityRangeMax": 2.803984716991584,
+      "heartRateTarget": 153,
+      "heartRateRangeMin": 143,
+      "heartRateRangeMax": 162,
+      "showDistance": true,
+      "showDuration": true,
+      "showHeartRate": true,
+      "showVelocity": true,
+      "velocityMaxTarget": false,
+      "flexible": true,
+      "multiple": 1,
+      "preferredWorkoutStepEnd": "DURATION",
+      "preferredWorkoutStepTarget": "SPEED"
+    }
+  ],
+  "id": "01H3D1Q2RT1T44E5PWF7VX0PF9/5",
+  "userId": "01GT7H0GKR78F2NXD45TV0EPNK",
+  "start": "2023-06-21T06:15:00Z",
+  "modifiedDate": "2023-06-21T15:00:05.918335768Z",
+  "version": "1150BK/5",
+  "goal": false,
+  "onTaper": true,
+  "workoutVisibility": "FULL",
+  "targetLoad": 16.8,
+  "generation": 37,
+  "counter": 1150,
+  "workoutInsights": [
+    {
+      "insightType": "TAPER"
+    }
+  ],
+  "next": true
+}
