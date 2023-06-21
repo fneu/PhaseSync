@@ -4,17 +4,16 @@ using Xive.Hive;
 
 namespace Test.PhaseSync.Core.Entity.PhasedTarget
 {
-    public sealed class TitleTests
+    public sealed class DescriptionTests
     {
-
         [Fact]
         public void SetsTitle()
         {
             var target = new PhasedTargetOf(new RamHive("test_user_id"), "test_target_id");
-            target.Update(new Title("TRAINING_ECONOMY"));
+            target.Update(new Description("1h 4min", "12.3km", "---", "stuff"));
 
-            Assert.True(new Title.Has(target).Value());
-            Assert.Equal("Economy Run", new Title.Of(target).Value());
+            Assert.True(new Description.Has(target).Value());
+            Assert.Equal("1h 4min\n12.3km\n---\nstuff", new Description.Of(target).Value());
         }
     }
 }
