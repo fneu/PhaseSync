@@ -57,7 +57,7 @@
                         Therefore, we need to store your password in order to create workouts on your behalf.
                         Your password will be encrypted before being stored.
                    </MudAlert>
-                    <MudForm @bind-IsValid="@PolarFormValid">
+                    <MudForm @ref="@form" @bind-IsValid="@PolarFormValid">
                         <MudTextField
                             T="string"
                             Label="Email"
@@ -72,16 +72,15 @@
                             Required="true" 
                             RequiredError="Password is required!" 
                             Class="mt-3"
+                            @bind-Value="@PolarPassword"
                             InputType="InputType.Password"/>
                         <MudStack Row=true Class="justify-space-between pt-4">
                             <MudText></MudText>
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!PolarFormValid)" Class="ml-auto">Save credentials</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!PolarFormValid)" Class="ml-auto" OnClick="@(async () => await SetPolarPassword())">Save credentials</MudButton>
                         </MudStack>
-
                     </MudForm>
                 </ChildContent>
             </MudExpansionPanel>
         </MudExpansionPanels>
-
     </MudItem>
 </MudGrid>

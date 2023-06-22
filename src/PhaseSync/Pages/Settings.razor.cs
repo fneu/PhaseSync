@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Options;
+using MudBlazor;
 using NuGet.Configuration;
 using PhaseSync.Blazor.Data;
 using PhaseSync.Blazor.Options;
@@ -32,7 +34,10 @@ namespace PhaseSync.Blazor.Pages
         public bool PolarConnected { get; set; } = false;
         public bool PolarFormValid { get; set; }
         public string PolarEmail { get; set; } = "";
+        public string PolarPassword { get; set; } = "";
 
+        [Inject] ISnackbar Snackbar { get; set; }
+        MudForm form;
 
         protected async override Task OnInitializedAsync()
         {
@@ -91,6 +96,20 @@ namespace PhaseSync.Blazor.Pages
             this.TAOConnected = new TaoToken.Has(this.UserSettings).Value();
         }
 
+        private async Task SetPolarPassword()
+        {
+            await form.Validate();
+
+            if (form.IsValid)
+            {
+                this.UserSettings.Update(
+                    new PolarEmail(this.PolarEmail),
+                    new PolarPassword(this.PolarPassword, PhaseSyncOptions.Value.PasswordEncryptionSecret)
+                    );
+                this.PolarConnected = true;
+                Snackbar.Add("Polar credentials were updated!");
+            }
+        }
 
     }
 }
