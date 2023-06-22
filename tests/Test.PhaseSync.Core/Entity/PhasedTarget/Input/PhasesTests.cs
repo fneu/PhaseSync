@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 using Xive.Hive;
 using Yaapii.Atoms.Enumerable;
 
-namespace Test.PhaseSync.Core.Entity.PhasedTarget
+namespace Test.PhaseSync.Core.Entity.PhasedTarget.Input
 {
     public sealed class PhasesTests
     {
@@ -17,7 +17,7 @@ namespace Test.PhaseSync.Core.Entity.PhasedTarget
             target.Update(
                 new Phases(
                     new ManyOf<JsonNode>(
-                        JsonObject.Parse("{\"name\": \"value\"}")!
+                        JsonNode.Parse("{\"name\": \"value\"}")!
                     )
                 )
             );

@@ -2,7 +2,7 @@
 using PhaseSync.Core.Entity.PhasedTarget.Input;
 using Xive.Hive;
 
-namespace Test.PhaseSync.Core.Entity.PhasedTarget
+namespace Test.PhaseSync.Core.Entity.PhasedTarget.Input
 {
     public sealed class TitleTests
     {

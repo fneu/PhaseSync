@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\PhaseSync.Core\PhaseSync.Core.csproj" />
+    <ProjectReference Include="..\Test.PhaseSync.Datum\Test.PhaseSync.Datum.csproj" />
   </ItemGroup>
 
 </Project>
