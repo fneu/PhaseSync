@@ -34,7 +34,7 @@ namespace PhaseSync.Core.Entity.PhasedTarget.Facets
                                 new KvpOf<string, IScalar<JsonNode>>("THRESHOLD_FAST", () => new SpeedDurationPhase(workoutStep, settings)),
                                 new KvpOf<string, IScalar<JsonNode>>("VERY_EASY", () => new SpeedDurationPhase(workoutStep, settings)),
                                 new KvpOf<string, IScalar<JsonNode>>("WALK", () => new SpeedDurationPhase(workoutStep, settings)),
-                                new KvpOf<string, IScalar<JsonNode>>("WARMUP", () => new OpenDurationPhase(workoutStep))
+                                new KvpOf<string, IScalar<JsonNode>>("WARMUP", () => new SpeedDurationPhase(workoutStep, settings))
                             ),
                             unknown => new SpeedDurationPhase(workoutStep, settings)
                         )[(string)workoutStep["workoutStepType"]!]
