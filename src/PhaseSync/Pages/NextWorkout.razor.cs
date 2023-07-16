@@ -3,6 +3,7 @@ using PhaseSync.Blazor.Data;
 using PhaseSync.Core.Entity;
 using PhaseSync.Core.Entity.Settings;
 using PhaseSync.Core.Entity.Settings.Input;
+using PhaseSync.Core.Service;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Xive;
@@ -27,21 +28,13 @@ namespace PhaseSync.Blazor.Pages
 
             if (TAOConnected)
             {
-                var httpClient = new HttpClient();
-                httpClient.BaseAddress = new Uri("https://beta.trainasone.com");
-                var request = new HttpRequestMessage(HttpMethod.Get, "/api/mobile/plannedWorkouts");
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", new TaoToken.Of(UserSettings).Value());
-                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                var response =  httpClient.Send(request);
-
-                if (response.IsSuccessStatusCode)
+                var taoSession = new TAOSession(new TaoToken.Of(UserSettings).Value());
+                try
                 {
-                    Workout = await response.Content.ReadAsStringAsync();
-                }
-                else
+                    Workout = taoSession.Get("/api/mobile/plannedWorkouts")[0].ToString();
+                } catch (Exception ex)
                 {
-                    Error = await response.Content.ReadAsStringAsync();
+                    Error = ex.Message;
                 }
             }
         }
