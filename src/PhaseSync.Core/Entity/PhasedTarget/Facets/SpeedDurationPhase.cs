@@ -13,7 +13,7 @@ namespace PhaseSync.Core.Entity.PhasedTarget.Facets
                 ["id"] = null,
                 ["lowerZone"] = 1,
                 ["upperZone"] = 5,
-                ["intensityType"] = "SPEED",
+                ["intensityType"] = "SPEED_ZONES",
                 ["phaseChangeType"] = "AUTOMATIC",
                 ["goalType"] = "DURATION",
                 ["duration"] = new PolarDuration((int)workoutStep["duration"]!).AsString(),

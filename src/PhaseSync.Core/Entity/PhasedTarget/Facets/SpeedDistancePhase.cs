@@ -13,7 +13,7 @@ namespace PhaseSync.Core.Entity.PhasedTarget.Facets
                 ["id"] = null,
                 ["lowerZone"] = 1, // TODO: PHASE
                 ["upperZone"] = 5, // TODO: PHASE
-                ["intensityType"] = "SPEED",
+                ["intensityType"] = "SPEED_ZONES",
                 ["phaseChangeType"] = "AUTOMATIC",
                 ["goalType"] = "DISTANCE",
                 ["duration"] = "00:00:00",

@@ -9,10 +9,10 @@
             </CardHeaderContent>
         </MudCardHeader>
         <MudCardContent>
-            <MudText>@Workout</MudText>
+            <MudText>@Workout.ToString()</MudText>
         </MudCardContent>
         <MudCardActions>
-            <MudButton Variant="Variant.Text" Color="Color.Primary">Push to Polar Flow</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@SendToPolar">Push to Polar Flow</MudButton>
         </MudCardActions>
     </MudCard>
     
