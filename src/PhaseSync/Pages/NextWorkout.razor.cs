@@ -4,6 +4,7 @@ using PhaseSync.Core.Entity;
 using PhaseSync.Core.Entity.Settings;
 using PhaseSync.Core.Entity.Settings.Input;
 using PhaseSync.Core.Service;
+using PhaseSync.Core.Service.TAO;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Xive;
@@ -31,7 +32,7 @@ namespace PhaseSync.Blazor.Pages
                 var taoSession = new TAOSession(new TaoToken.Of(UserSettings).Value());
                 try
                 {
-                    Workout = taoSession.Get("/api/mobile/plannedWorkouts")[0].ToString();
+                    Workout = new Next(taoSession).Value().ToString();
                 } catch (Exception ex)
                 {
                     Error = ex.Message;
