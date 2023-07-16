@@ -9,24 +9,29 @@ namespace PhaseSync.Core.Entity.PhasedTarget
 {
     public sealed class TAOTarget : EntityEnvelope<IHoneyComb>
     {
-        public TAOTarget(IHive userHive, string taoWorkout) : base(() =>
+        public TAOTarget(IHive userHive, string taoWorkout) : this(
+            userHive,
+            JsonNode.Parse(taoWorkout)!
+        )
+        { }
+
+        public TAOTarget(IHive userHive, JsonNode taoWorkout) : base(() =>
         {
-            var json = JsonObject.Parse(taoWorkout)!;
-            var target = new PhasedTargetOf(userHive, (string)json["id"]!);
+            var target = new PhasedTargetOf(userHive, (string)taoWorkout["id"]!);
             var settings = new SettingsOf(userHive);
 
-            var steps = json["workoutSteps"]!;
+            var steps = taoWorkout["workoutSteps"]!;
             target.Update(
-                new Title((string)json["activitySubType"]!),
-                new Time((string)json["start"]!, "Europe/Berlin"), // TODO: Get timezone from user settings
+                new Title((string)taoWorkout["activitySubType"]!),
+                new Time((string)taoWorkout["start"]!, "Europe/Berlin"), // TODO: Get timezone from user settings
                 new Description(
-                    new HumanReadableDuration((int)json["duration"]!).AsString(),
-                    new HumanReadableDistance((double)json["distance"]!, settings).AsString(),
+                    new HumanReadableDuration((int)taoWorkout["duration"]!).AsString(),
+                    new HumanReadableDistance((double)taoWorkout["distance"]!, settings).AsString(),
                     "---"),
                 new Phases(
                     new Yaapii.Atoms.Enumerable.Mapped<JsonNode, JsonNode>(
                         x => new Phase(x, settings).Value(),
-                        json["workoutSteps"]!.AsArray()!
+                        taoWorkout["workoutSteps"]!.AsArray()!
                     )
                 )
             );
