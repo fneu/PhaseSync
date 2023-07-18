@@ -81,6 +81,79 @@
                     </MudForm>
                 </ChildContent>
             </MudExpansionPanel>
+              <MudExpansionPanel>
+                <TitleContent>
+                    <div class="d-flex">
+                        <MudIcon 
+                            Class="mr-3"
+                            Icon="@(HasUnit && HasMode && HasMas && HasRadius
+                                ? Icons.Material.Filled.CheckCircle
+                                : Icons.Material.Filled.Warning)"
+                            Color="@(HasUnit && HasMode && HasMas && HasRadius
+                                ? Color.Primary
+                                : Color.Error)"/>
+                        <MudText>Phased Target Settings</MudText>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    <MudForm @ref="@form2" @bind-IsValid="@SettingsFormValid">
+                        <MudSelect 
+                                @bind-Value="Unit" 
+                                Class="mt-3"
+                                Label="Unit system" 
+                                Placeholder="Please Select" 
+                                Required="true" 
+                                RequiredError="Unit system is required!" 
+                                AdornmentIcon="@Icons.Material.Filled.SquareFoot"
+                                AdornmentColor="Color.Primary">
+                            <MudSelectItem Value="@("IMPERIAL")" Disabled="true">Imperial (Disabled)</MudSelectItem>
+                            <MudSelectItem Value="@("METRIC")">Metric</MudSelectItem>
+                        </MudSelect>
+                        <MudSelect 
+                                @bind-Value="Mode"
+                                Class="mt-3"
+                                Label="Speed format"
+                                Placeholder="Please Select"
+                                Required="true" 
+                                RequiredError="Speed format is required!" 
+                                AdornmentIcon="@Icons.Material.Filled.Speed"
+                                AdornmentColor="Color.Primary">
+                            <MudSelectItem Value="@("SPEED")" Disabled="true">Speed (Disabled)</MudSelectItem>
+                            <MudSelectItem Value="@("PACE")">Pace</MudSelectItem>
+                        </MudSelect>
+                        <MudSwitch
+                            @bind-Checked="@SetZones"
+                            Class="mt-3"
+                            ThumbIcon="@(SetZones==true ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                            ThumbIconColor="@(SetZones==true ? Color.Primary : Color.Error)">Automatically set speed zones</MudSwitch>
+                        <MudNumericField 
+                            @bind-Value="Radius"
+                            Class="mt-3"
+                            Label="Zone radius in meters per second"
+                            Variant="Variant.Text"
+                            Min="0.01"
+                            Max="0.5"
+                            Step="0.01"/>
+                        <MudNumericField
+                            @bind-Value="Mas"
+                            Class="mt-3"
+                            Label="vVO2max in meters per second"
+                            Variant="Variant.Text"
+                            Min="1.0"
+                            Max="10.0"
+                            Step="0.1"/>
+                        <MudStack Row=true Class="justify-space-between pt-4">
+                            <MudText></MudText>
+                            <MudButton 
+                                Variant="Variant.Filled"
+                                Color="Color.Primary"
+                                Disabled="@(!SettingsFormValid)"
+                                OnClick="@(async () => await SetSettings())"
+                                Class="ml-auto" >Save settings</MudButton>
+                        </MudStack>
+                    </MudForm>
+                </ChildContent>
+            </MudExpansionPanel>
         </MudExpansionPanels>
     </MudItem>
 </MudGrid>

@@ -38,12 +38,48 @@ namespace PhaseSync.Blazor.Pages
 
         [Inject] ISnackbar Snackbar { get; set; }
         MudForm form;
+        MudForm form2;
+
+        public bool HasUnit { get; set; } = false;
+        public string Unit { get; set; } = "";
+        public bool HasMode { get; set; } = false;
+        public string Mode { get; set; } = "";
+        public bool HasMas { get; set; } = false;
+        public double Mas { get; set; } = 3.4;
+        public bool SetZones { get; set; } = false;
+        public bool HasRadius { get; set; } = false;
+        public double Radius { get; set; } = 0.15;
+        public bool SettingsFormValid { get; set; }
 
         protected async override Task OnInitializedAsync()
         {
             this.UserSettings = new SettingsOf(await HiveService.UserHive());
             this.PolarConnected = new PolarEmail.Has(this.UserSettings).Value() && new PolarPassword.Has(this.UserSettings).Value();
             this.TAOConnected = new TaoToken.Has(this.UserSettings).Value();
+            this.HasUnit = new ZoneUnit.Has(this.UserSettings).Value();
+            this.HasMode = new ZoneMode.Has(this.UserSettings).Value();
+            this.HasMas = new ZoneMas.Has(this.UserSettings).Value();
+            this.HasRadius = new ZoneRadius.Has(this.UserSettings).Value();
+            if (this.HasUnit)
+            {
+                this.Unit = new ZoneUnit.Of(this.UserSettings).Value();
+            }
+            if (this.HasMode)
+            {
+                this.Mode = new ZoneMode.Of(this.UserSettings).Value();
+            }
+            if (new SetZones.Has(this.UserSettings).Value())
+            {
+                this.SetZones = new SetZones.Of(this.UserSettings).Value();
+            }
+            if (this.HasMas)
+            {
+                this.Mas = new ZoneMas.Of(this.UserSettings).Value();
+            }
+            if (this.HasRadius)
+            {
+                this.Radius = new ZoneRadius.Of(UserSettings).Value();
+            }
         }
 
         public void AuthorizeTAO()
@@ -108,6 +144,27 @@ namespace PhaseSync.Blazor.Pages
                     );
                 this.PolarConnected = true;
                 Snackbar.Add("Polar credentials were updated!");
+            }
+        }
+
+        private async Task SetSettings()
+        {
+            await form.Validate();
+
+            if (form2.IsValid)
+            {
+                this.UserSettings.Update(
+                    new ZoneUnit(Unit),
+                    new ZoneMode(Mode),
+                    new SetZones(SetZones),
+                    new ZoneMas(Mas),
+                    new ZoneRadius(Radius)
+                    );
+                this.HasUnit = true;
+                this.HasMode = true;
+                this.HasMas = true;
+                this.HasRadius = true;
+                Snackbar.Add("Phased target settings were updated!");
             }
         }
 
