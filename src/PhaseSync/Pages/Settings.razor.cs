@@ -51,6 +51,19 @@ namespace PhaseSync.Blazor.Pages
         public double Radius { get; set; } = 0.15;
         public bool SettingsFormValid { get; set; }
 
+
+        public bool SettingsComplete { get; set; } = false;
+
+        private bool _syncEnabled;
+        public bool SyncEnabled {
+            get { return _syncEnabled; }
+            set { 
+                _syncEnabled = value;
+                this.UserSettings.Update(
+                    new EnableSync(value));
+            }
+        }
+
         protected async override Task OnInitializedAsync()
         {
             this.UserSettings = new SettingsOf(await HiveService.UserHive());
@@ -80,6 +93,9 @@ namespace PhaseSync.Blazor.Pages
             {
                 this.Radius = new ZoneRadius.Of(UserSettings).Value();
             }
+            this.SyncEnabled = new EnableSync.Of(UserSettings).Value();
+
+            this.CheckSettings();
         }
 
         public void AuthorizeTAO()
@@ -130,6 +146,8 @@ namespace PhaseSync.Blazor.Pages
                 this.UserSettings.Update(new TaoToken(""));
             }
             this.TAOConnected = new TaoToken.Has(this.UserSettings).Value();
+
+            this.CheckSettings();
         }
 
         private async Task SetPolarPassword()
@@ -145,6 +163,8 @@ namespace PhaseSync.Blazor.Pages
                 this.PolarConnected = true;
                 Snackbar.Add("Polar credentials were updated!");
             }
+
+            this.CheckSettings();
         }
 
         private async Task SetSettings()
@@ -166,7 +186,27 @@ namespace PhaseSync.Blazor.Pages
                 this.HasRadius = true;
                 Snackbar.Add("Phased target settings were updated!");
             }
+
+            this.CheckSettings();
         }
 
+        private void CheckSettings()
+        {
+            if (this.TAOConnected && this.PolarConnected && this.HasUnit && this.HasMode && this.HasMas && this.HasRadius)
+            {
+                this.SettingsComplete = true;
+
+                this.UserSettings.Update(
+                    new SettingsComplete(true));
+            }
+            else
+            {
+                this.SettingsComplete = false;
+                this.UserSettings.Update(
+                    new SettingsComplete(false)
+                );
+                this.SyncEnabled = false;
+            }
+        }
     }
 }

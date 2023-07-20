@@ -2,10 +2,22 @@
 @using System.ComponentModel.DataAnnotations;
 @attribute [Authorize]
 
-<h1>Settings</h1>
-
 <MudGrid Class="justify-center">
     <MudItem xs="12" md="7">
+        <MudPaper Class="ps-4 pt-2 pb-4 mb-4">
+            @if (!SettingsComplete)
+            {
+                <MudAlert Severity="Severity.Warning">
+                    Automatic workout sync is blocked because the settings below are incomplete.
+               </MudAlert>
+            }
+            <MudSwitch
+                Disabled="@(!SettingsComplete)"
+                @bind-Checked="@SyncEnabled"
+                Class="mt-3"
+                Size="Size.Large"
+                Color="Color.Primary">Enable automatic workout sync</MudSwitch>
+        </MudPaper>
         <MudExpansionPanels>
             <MudExpansionPanel>
                 <TitleContent>
