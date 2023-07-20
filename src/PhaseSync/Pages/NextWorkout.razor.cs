@@ -28,6 +28,7 @@ namespace PhaseSync.Blazor.Pages
 
         public IEntity<IProps> UserSettings { get; set; } = default!;
         public bool TAOConnected { get; set; } = false;
+        public bool SettingsComplete { get; set; } = false;
         public string? Error { get; set; }
 
         public JsonNode Workout { get; set; } = "";
@@ -36,6 +37,7 @@ namespace PhaseSync.Blazor.Pages
         {
             this.UserSettings = new SettingsOf(await HiveService.UserHive());
             this.TAOConnected = new TaoToken.Has(this.UserSettings).Value();
+            this.SettingsComplete = new SettingsComplete.Of(this.UserSettings).Value();
 
             if (TAOConnected)
             {
