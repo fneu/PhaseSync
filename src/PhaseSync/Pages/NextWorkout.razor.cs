@@ -30,7 +30,7 @@ namespace PhaseSync.Blazor.Pages
         public bool SettingsComplete { get; set; } = false;
         public string? Error { get; set; }
 
-        public JsonNode Workout { get; set; } = "";
+        public JsonNode? Workout { get; set; }
 
         protected async override Task OnInitializedAsync()
         {
