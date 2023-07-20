@@ -17,7 +17,7 @@ namespace PhaseSync.Core.Entity.PhasedTarget
 
         public TAOTarget(IHive userHive, JsonNode taoWorkout) : base(() =>
         {
-            var target = new PhasedTargetOf(userHive, (string)taoWorkout["id"]!);
+            var target = new PhasedTargetOf(userHive, ((string)taoWorkout["id"]!).Replace("/", "_"));
             var settings = new SettingsOf(userHive);
 
             var steps = taoWorkout["workoutSteps"]!;
