@@ -1,10 +1,8 @@
 ﻿using System.Net;
-using System.Text;
-using System.Text.Json.Nodes;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Scalar;
 
-namespace PhaseSync.Core.Service
+namespace PhaseSync.Core.Outgoing.Polar
 {
     public sealed class PolarSession : ISession, IDisposable
     {
@@ -14,7 +12,7 @@ namespace PhaseSync.Core.Service
 
         public PolarSession(string username, string password)
         {
-            this.client = new ScalarOf<HttpClient>(() =>
+            client = new ScalarOf<HttpClient>(() =>
             {
                 var client =
                     new HttpClient(
@@ -43,32 +41,12 @@ namespace PhaseSync.Core.Service
 
         public void Dispose()
         {
-            this.client.Value().Dispose();
+            client.Value().Dispose();
         }
 
-        public JsonNode Get(string url)
+        public async Task<IResult> Send(IRequest request)
         {
-            var response = this.client.Value().GetAsync(url).Result;
-            var responseContent = response.Content.ReadAsStringAsync().Result;
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Get request to polar flow ({url}) failed: {responseContent}");
-            }
-            return JsonNode.Parse(responseContent)!;
-        }
-
-        public JsonNode Post(string url, JsonNode content)
-        {
-            var stringContent = new StringContent(content.ToString(), Encoding.UTF8, "application/json");
-            var response = this.client.Value().PostAsync(url, stringContent).Result;
-            var responseContent = response.Content.ReadAsStringAsync().Result;
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Post request to polar flow ({url}) failed: {responseContent}");
-            }
-            return JsonNode.Parse(responseContent)!;
+            return await request.Send(client.Value());
         }
     }
 }

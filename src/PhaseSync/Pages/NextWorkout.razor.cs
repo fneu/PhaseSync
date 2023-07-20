@@ -8,10 +8,8 @@ using PhaseSync.Core.Entity.PhasedTarget;
 using PhaseSync.Core.Entity.PhasedTarget.Input;
 using PhaseSync.Core.Entity.Settings;
 using PhaseSync.Core.Entity.Settings.Input;
-using PhaseSync.Core.Service;
-using PhaseSync.Core.Service.TAO;
-using System.Net.Http.Headers;
-using System.Text.Json;
+using PhaseSync.Core.Outgoing.Polar;
+using PhaseSync.Core.Outgoing.TAO;
 using System.Text.Json.Nodes;
 using Xive;
 
@@ -42,23 +40,24 @@ namespace PhaseSync.Blazor.Pages
             if (TAOConnected)
             {
                 var taoSession = new TAOSession(new TaoToken.Of(UserSettings).Value());
-                try
+                var workoutResult = await taoSession.Send(new GetUpcomingWorkout());
+                if (workoutResult.Success()){
+                    Workout = workoutResult.Content();
+                }
+                else
                 {
-                    Workout = new Next(taoSession).Value();
-                } catch (Exception ex)
-                {
-                    Error = ex.Message;
+                    Error = workoutResult.ErrorMsg();
                 }
             }
         }
 
-        public void SendToPolar()
+        public async void SendToPolar()
         {
             try
             {
                 var hive = HiveService.UserHive().Result;
                 var settings = new SettingsOf(hive);
-                var target = new TAOTarget(hive, Workout);
+                var target = new TAOTarget(hive, Workout.ToString());
                 var polarJson = new JsonObject()
                 {
                     ["type"] = "PHASED",
@@ -78,16 +77,24 @@ namespace PhaseSync.Blazor.Pages
                         }
                     }
                 };
-                var polarSession = 
+                var polarSession =
                     new PolarSession(
                         new PolarEmail.Of(settings).Value(),
                         new PolarPassword.Of(settings, PhaseSyncOptions.Value.PasswordEncryptionSecret).Value());
 
-                polarSession.Post("/api/trainingtarget", polarJson);
-                Snackbar.Add("The workout was uploaded to polar flow!", Severity.Success);
+                var result = await polarSession.Send(new PostWorkout(polarJson));
+                if (result.Success())
+                {
+                    Snackbar.Add("The workout was uploaded to polar flow!", Severity.Success);
+                }
+                else
+                {
+                    Snackbar.Add($"Upload failed: {result.ErrorMsg()}", Severity.Error);
+                }
             }
-            catch (Exception ex){
-                Snackbar.Add($"Upload failed: {ex.Message}", Severity.Error);
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Sending to Polar failed: {ex.Message}", Severity.Error);
             }
         }
     }
