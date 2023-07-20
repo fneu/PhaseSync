@@ -5,7 +5,6 @@ using PhaseSync.Blazor.Data;
 using PhaseSync.Blazor.Options;
 using PhaseSync.Core.Entity;
 using PhaseSync.Core.Entity.PhasedTarget;
-using PhaseSync.Core.Entity.PhasedTarget.Input;
 using PhaseSync.Core.Entity.Settings;
 using PhaseSync.Core.Entity.Settings.Input;
 using PhaseSync.Core.Outgoing.Polar;
@@ -59,32 +58,18 @@ namespace PhaseSync.Blazor.Pages
             {
                 var hive = HiveService.UserHive().Result;
                 var settings = new SettingsOf(hive);
-                var target = new TAOTarget(hive, Workout.ToString());
-                var polarJson = new JsonObject()
-                {
-                    ["type"] = "PHASED",
-                    ["name"] = new Title.Of(target).Value(),
-                    ["description"] = new Description.Of(target).Value(),
-                    ["datetime"] = new Time.Of(target).Value(),
-                    ["exerciseTargets"] = new JsonArray() {
-                        new JsonObject()
-                        {
-                            ["id"] = null,
-                            ["distance"] = null,
-                            ["calories"] = null,
-                            ["duration"] = null,
-                            ["index"] = 0,
-                            ["sportId"] = 1,
-                            ["phases"] = new Phases.Of(target).Value()
-                        }
-                    }
-                };
                 var polarSession =
                     new PolarSession(
                         new PolarEmail.Of(settings).Value(),
                         new PolarPassword.Of(settings, PhaseSyncOptions.Value.PasswordEncryptionSecret).Value());
 
-                var result = await polarSession.Send(new PostWorkout(polarJson));
+                foreach (var existingTarget in new PhasedTargets(hive))
+                {
+                    await polarSession.Send(new DeleteTarget(hive, existingTarget));
+                }
+
+                var target = new TAOTarget(hive, Workout.ToString());
+                var result = await polarSession.Send(new PostTarget(target));
                 if (result.Success())
                 {
                     Snackbar.Add("The workout was uploaded to polar flow!", Severity.Success);
