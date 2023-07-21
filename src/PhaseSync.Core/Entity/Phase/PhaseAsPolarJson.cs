@@ -8,16 +8,16 @@ using Yaapii.Atoms.Scalar;
 
 namespace PhaseSync.Core.Entity.Phase
 {
-    public sealed class PhaseAsJson : ScalarEnvelope<JsonNode>
+    public sealed class PhaseAsPolarJson : ScalarEnvelope<JsonNode>
     {
-        public PhaseAsJson(string id, IHoneyComb comb, IHive hive) : this(
+        public PhaseAsPolarJson(string id, IHoneyComb comb, IHive hive) : this(
             new PhaseOf(comb, id),
             comb,
             new SettingsOf(hive)
         )
         { }
 
-        public PhaseAsJson(IEntity<IXocument> phase, IHoneyComb comb, IEntity<IProps> settings) : base(
+        public PhaseAsPolarJson(IEntity<IXocument> phase, IHoneyComb comb, IEntity<IProps> settings) : base(
             () =>
             {
                 if (new SubPhases.Has(phase).Value())
@@ -28,7 +28,7 @@ namespace PhaseSync.Core.Entity.Phase
                         ["repeatCount"] = new SubPhases.RepeatCount(phase).Value(),
                         ["phases"] = new JsonArray(
                             new Mapped<string, JsonNode>(
-                                id => new PhaseAsJson(new PhaseOf(comb, id), comb, settings).Value(),
+                                id => new PhaseAsPolarJson(new PhaseOf(comb, id), comb, settings).Value(),
                                 new SubPhases.IDs(phase)
                             ).ToArray()
                         )

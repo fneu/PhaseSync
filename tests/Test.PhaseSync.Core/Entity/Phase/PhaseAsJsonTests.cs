@@ -46,7 +46,7 @@ namespace Test.PhaseSync.Core.Entity.Phase
                 new SubPhases(3, sub1, sub2)
             );
 
-            var actual = new PhaseAsJson(repeat, comb, settings).Value().ToString();
+            var actual = new PhaseAsPolarJson(repeat, comb, settings).Value().ToString();
             var expected = new JsonObject()
             {
                 ["phaseType"] = "REPEAT",

@@ -69,7 +69,7 @@ namespace PhaseSync.Blazor.Pages
                 }
 
                 var target = new TAOTarget(hive, Workout.ToString());
-                var result = await polarSession.Send(new PostTarget(target));
+                var result = await polarSession.Send(new PostTarget(target, settings));
                 if (result.Success())
                 {
                     Snackbar.Add("The workout was uploaded to polar flow!", Severity.Success);

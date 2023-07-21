@@ -1,8 +1,7 @@
-﻿using System.Text.Json.Nodes;
+﻿using PhaseSync.Core.Entity.Phase;
 using Xive;
-using Yaapii.Atoms.IO;
+using Yaapii.Atoms.List;
 using Yaapii.Atoms.Scalar;
-using Yaapii.Atoms.Text;
 
 namespace PhaseSync.Core.Entity.PhasedTarget.Input
 {
@@ -11,34 +10,32 @@ namespace PhaseSync.Core.Entity.PhasedTarget.Input
     {
         private const string KEY = "phases";
 
-        public Phases(IEnumerable<JsonNode> phases) : base(
-            comb => comb.Cell(KEY).Update(
-                new InputOf(
-                    new JsonArray(
-                        phases.ToArray()
-                    ).ToJsonString()
-                )
+        public Phases(IEnumerable<IEntity<IXocument>> phases) : base(
+            (comb) => comb.Props().Refined(
+                KEY,
+                new Mapped<IEntity<IXocument>, string>(
+                    phase => phase.ID(),
+                    phases
+                ).ToArray()
             )
-
         )
         { }
 
         public sealed class Has : ScalarEnvelope<bool>
         {
             public Has(IEntity<IHoneyComb> target) : base(
-                () => target.Memory().Cell(KEY).Content().Length != 0
+               () => target.Memory().Props().Names().Contains(KEY)
             )
             { }
         }
 
-        public sealed class Of : ScalarEnvelope<JsonNode>
+        public sealed class Of : ListEnvelope<IEntity<IXocument>>
         {
             public Of(IEntity<IHoneyComb> target) : base(
-                () => JsonNode.Parse(
-                    new TextOf(
-                        target.Memory().Cell(KEY).Content()
-                    ).AsString()
-                )!
+                () => new Mapped<string, IEntity<IXocument>>(
+                    id => new PhaseOf(target.Memory(), id),
+                    target.Memory().Props().Values(KEY)),
+                false
             )
             { }
         }

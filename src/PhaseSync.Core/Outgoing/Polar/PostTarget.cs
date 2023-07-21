@@ -1,8 +1,10 @@
 ﻿using PhaseSync.Core.Entity;
+using PhaseSync.Core.Entity.Phase;
 using PhaseSync.Core.Entity.PhasedTarget.Input;
 using System.Text;
 using System.Text.Json.Nodes;
 using Xive;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Number;
 
 namespace PhaseSync.Core.Outgoing.Polar
@@ -11,10 +13,12 @@ namespace PhaseSync.Core.Outgoing.Polar
     {
         private const string url = "/api/trainingtarget";
         private readonly IEntity<IHoneyComb> target;
+        private readonly IEntity<IProps> settings;
 
-        public PostTarget(IEntity<IHoneyComb> target)
+        public PostTarget(IEntity<IHoneyComb> target, IEntity<IProps> settings)
         {
             this.target = target;
+            this.settings = settings;
         }
 
         public async Task<IResult> Send(HttpClient client)
@@ -34,7 +38,13 @@ namespace PhaseSync.Core.Outgoing.Polar
                         ["duration"] = null,
                         ["index"] = 0,
                         ["sportId"] = 1,
-                        ["phases"] = new Phases.Of(target).Value()
+                        ["phases"] = new JsonArray(
+                            new Mapped<IEntity<IXocument>, JsonNode>(
+                                phase => new PhaseAsPolarJson(phase, target.Memory(), settings).Value(),
+                                new Phases.Of(target)
+                                
+                                ).ToArray()
+                        )
                     }
                 }
             };

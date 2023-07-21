@@ -1,4 +1,4 @@
-﻿using PhaseSync.Core.Entity.PhasedTarget.Facets;
+﻿using PhaseSync.Core.Entity.Phase;
 using PhaseSync.Core.Entity.PhasedTarget.Input;
 using PhaseSync.Core.Entity.Settings;
 using PhaseSync.Core.Units;
@@ -29,8 +29,8 @@ namespace PhaseSync.Core.Entity.PhasedTarget
                     new HumanReadableDistance((double)taoWorkout["distance"]!, settings).AsString(),
                     "---"),
                 new Phases(
-                    new Yaapii.Atoms.Enumerable.Mapped<JsonNode, JsonNode>(
-                        x => new Facets.Phase(x, settings).Value(),
+                    new Yaapii.Atoms.Enumerable.Mapped<JsonNode, IEntity<IXocument>>(
+                        x => new TAOJsonAsPhase(x, target.Memory(), settings).Value(),
                         taoWorkout["workoutSteps"]!.AsArray()!
                     )
                 )

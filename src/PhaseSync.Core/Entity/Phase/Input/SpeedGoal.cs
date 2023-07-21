@@ -41,7 +41,8 @@ namespace PhaseSync.Core.Entity.Phase.Input
             public LowerZone(IEntity<IXocument> phase, IEntity<IProps> settings) : base(
                 () =>
                 {
-                    if (!new SetZones.Of(settings).Value()
+                    if (!new SetZones.Has(settings).Value()
+                        || !new SetZones.Of(settings).Value()
                         || !new ZoneLowerBounds.Has(settings).Value()
                         || !new ZoneRadius.Has(settings).Value())
                     {
@@ -69,7 +70,8 @@ namespace PhaseSync.Core.Entity.Phase.Input
             public UpperZone(IEntity<IXocument> phase, IEntity<IProps> settings) : base(
                 () =>
                 {
-                    if (!new SetZones.Of(settings).Value()
+                    if (!new SetZones.Has(settings).Value()
+                        || !new SetZones.Of(settings).Value()
                         || !new ZoneLowerBounds.Has(settings).Value()
                         || !new ZoneRadius.Has(settings).Value())
                     {
