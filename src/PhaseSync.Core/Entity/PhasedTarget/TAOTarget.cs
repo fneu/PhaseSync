@@ -30,7 +30,7 @@ namespace PhaseSync.Core.Entity.PhasedTarget
                     "---"),
                 new Phases(
                     new Yaapii.Atoms.Enumerable.Mapped<JsonNode, JsonNode>(
-                        x => new Phase(x, settings).Value(),
+                        x => new Facets.Phase(x, settings).Value(),
                         taoWorkout["workoutSteps"]!.AsArray()!
                     )
                 )
