@@ -63,7 +63,7 @@ namespace PhaseSync.Blazor.Pages
                         new PolarEmail.Of(settings).Value(),
                         new PolarPassword.Of(settings, PhaseSyncOptions.Value.PasswordEncryptionSecret).Value());
 
-                foreach (var existingTarget in new PhasedTargets(hive))
+                foreach (var existingTarget in new PhasedTargetCollection(hive))
                 {
                     await polarSession.Send(new DeleteTarget(hive, existingTarget));
                 }
