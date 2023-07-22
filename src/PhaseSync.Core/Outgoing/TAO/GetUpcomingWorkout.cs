@@ -1,4 +1,6 @@
 ﻿using System.Text.Json.Nodes;
+using Yaapii.Atoms.Collection;
+using Yaapii.Atoms.Text;
 
 namespace PhaseSync.Core.Outgoing.TAO
 {
@@ -13,10 +15,14 @@ namespace PhaseSync.Core.Outgoing.TAO
 
             if (response.IsSuccessStatusCode)
             {
+                var workouts = JsonNode.Parse(responseContent)!;
                 return new ResultOf(
                     true,
                     "",
-                    JsonNode.Parse(responseContent)![0]!
+                    new Filtered<JsonNode>(
+                        workout => new BoolOf(workout["next"]!.ToString()).Value(),
+                        JsonNode.Parse(responseContent)!.AsArray()!
+                    ).First()
                 );
             }
 
