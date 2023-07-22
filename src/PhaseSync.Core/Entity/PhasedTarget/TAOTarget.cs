@@ -27,6 +27,10 @@ namespace PhaseSync.Core.Entity.PhasedTarget
                 new Description(
                     new HumanReadableDuration((int)taoWorkout["duration"]!).AsString(),
                     new HumanReadableDistance((double)taoWorkout["distance"]!, settings).AsString(),
+                    "synced " + TimeZoneInfo.ConvertTimeFromUtc(
+                        DateTime.UtcNow,
+                        TimeZoneInfo.FindSystemTimeZoneById("Europe/Berlin") // TODO: Use Timezone here, too
+                    ).ToString("ddd, HH:mm"),
                     "---"),
                 new Phases(
                     new Yaapii.Atoms.Enumerable.Mapped<JsonNode, IEntity<IXocument>>(
