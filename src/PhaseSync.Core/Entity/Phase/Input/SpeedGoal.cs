@@ -83,7 +83,7 @@ namespace PhaseSync.Core.Entity.Phase.Input
 
                     for (var i = 0; i < 5; i++)
                     {
-                        if (targetSpeed + radius < zoneLowerBounds[i])
+                        if (targetSpeed + radius <= zoneLowerBounds[i])
                         {
                             return new Max<int>(i, 1).Value();
                         }

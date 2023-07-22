@@ -18,7 +18,11 @@ namespace PhaseSync.Core.Outgoing.Polar
 
         public async Task<IResult> Send(HttpClient client)
         {
-            await client.DeleteAsync($"/training/target/{new PolarID.Of(target).Value()}");
+            if (new PolarID.Has(target).Value())
+            {
+                await client.DeleteAsync($"/training/target/{new PolarID.Of(target).Value()}");
+            }
+
             this.userHive.Catalog().Remove(target.Memory().Name().Substring(userHive.Scope().Length + 1));
 
             return new ResultOf(

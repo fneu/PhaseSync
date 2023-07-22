@@ -9,8 +9,10 @@ using PhaseSync.Core.Entity.Settings;
 using PhaseSync.Core.Entity.Settings.Input;
 using PhaseSync.Core.Outgoing.Polar;
 using PhaseSync.Core.Outgoing.TAO;
+using PhaseSync.Core.Zones;
 using System.Text.Json.Nodes;
 using Xive;
+using Yaapii.Atoms.Enumerable;
 
 namespace PhaseSync.Blazor.Pages
 {
@@ -68,7 +70,42 @@ namespace PhaseSync.Blazor.Pages
                     await polarSession.Send(new DeleteTarget(hive, existingTarget));
                 }
 
-                var target = new TAOTarget(hive, Workout.ToString());
+                var target = new TAOTarget(hive, Workout!.ToString());
+
+                var sportProfileResult = await polarSession.Send(new GetRunningProfile());
+                if (sportProfileResult.Success())
+                {
+                    try
+                    {
+                        var zones = new TargetZones(target, settings);
+                        var zonesResult = await polarSession.Send(new PostZones(zones, sportProfileResult.Content().ToString(), settings));
+                        if (zonesResult.Success())
+                        {
+                            settings.Update(
+                                new ZoneLowerBounds(
+                                    new Mapped<IZone, double>(
+                                        zone => zone.Min(),
+                                        zones
+                                    ).ToArray()
+                                )
+                            );
+                            Snackbar.Add($"Speed zones were updated!", Severity.Success);
+                        }
+                        else
+                        {
+                            Snackbar.Add($"Settings zones failed: {zonesResult.ErrorMsg()}", Severity.Warning);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Snackbar.Add($"Calculating zones failed: {ex.Message}", Severity.Warning);
+                    }
+                }
+                else
+                {
+                    Snackbar.Add($"Getting running profile failed: {sportProfileResult.ErrorMsg()}", Severity.Warning);
+                }
+
                 var result = await polarSession.Send(new PostTarget(target, settings));
                 if (result.Success())
                 {

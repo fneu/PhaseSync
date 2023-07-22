@@ -2,11 +2,11 @@
 using PhaseSync.Core.Entity.Settings.Input;
 using PhaseSync.Core.Zones.Facets;
 using Xive;
-using Yaapii.Atoms.Enumerable;
+using Yaapii.Atoms.List;
 
 namespace PhaseSync.Core.Zones
 {
-    public sealed class TargetZones : ManyEnvelope<IZone>
+    public sealed class TargetZones : ListEnvelope<IZone>
     {
         public const double FallbackSpeed = 2.78; // 6 min/km
 
@@ -86,7 +86,7 @@ namespace PhaseSync.Core.Zones
                     var below = new Retreated(zones[max_overlap_index], new_zone);
                     var above = new Retreated(zones[max_overlap_index + 1], new_zone);
                     zones.RemoveRange(max_overlap_index, 2);
-                    zones.InsertRange(max_overlap_index, new ManyOf<IZone>(below, new_zone, above));
+                    zones.InsertRange(max_overlap_index, new ListOf<IZone>(below, new_zone, above));
                     overlaps--;
                 }
 
@@ -125,7 +125,7 @@ namespace PhaseSync.Core.Zones
                         var new_below = new Advanced(zones[i], center);
                         var new_above = new Advanced(zones[i+1], center);
                         zones.RemoveRange(i, 2);
-                        zones.InsertRange(i, new ManyOf<IZone>(new_below, new_above)
+                        zones.InsertRange(i, new ListOf<IZone>(new_below, new_above)
                         );
                     }
                 }
