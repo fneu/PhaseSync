@@ -63,7 +63,7 @@ namespace PhaseSync
                 dbContext.Database.Migrate();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 
