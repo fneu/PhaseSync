@@ -82,6 +82,27 @@ namespace Test.PhaseSync.Core.Entity.Phase.Input
             Assert.Equal(5, new SpeedGoal.UpperZone(phase, settings).Value());
         }
 
+        [Fact]
+        public void RetroactivelyChoosesZone()
+        {
+            var hive = new RamHive("test_user_id");
+            var settings = new SettingsOf(hive);
+            settings.Update(
+                new SetZones(true),
+                new ZoneRadius(1)
+            );
+
+            var phase = new PhaseOf(hive.Comb("test_program_id"), "test_phase_id");
+            phase.Update(new SpeedGoal(3.5));
+
+            Assert.Equal(5, new SpeedGoal.UpperZone(phase, settings).Value());
+
+            settings.Update(
+                new ZoneLowerBounds(new double[] { 1, 2, 3, 4, 5})
+            );
+
+            Assert.Equal(4, new SpeedGoal.UpperZone(phase, settings).Value());
+        }
 
     }
 }
