@@ -12,9 +12,9 @@ namespace PhaseSync.Core.Units
         public KPHorMPH(double speedInMPS, IEntity<IProps> settings) : base(() =>
             new FallbackMap<string, string>(
                 MapOf.New(
-                    KvpOf.New("IMPERIAL", () => (speedInMPS * 2.23694).ToString("F1", CultureInfo.InvariantCulture))
+                    KvpOf.New("IMPERIAL", () => (speedInMPS * 2.23694).ToString("F3", CultureInfo.InvariantCulture))
                 ),
-                unknown => (speedInMPS * 3.6).ToString("F1", CultureInfo.InvariantCulture)
+                unknown => (speedInMPS * 3.6).ToString("F3", CultureInfo.InvariantCulture)
             )[new ZoneUnit.Has(settings).Value() ? new ZoneUnit.Of(settings).Value() : "METRIC"],
             false
         )
