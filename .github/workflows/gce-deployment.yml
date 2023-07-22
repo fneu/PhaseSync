@@ -26,7 +26,7 @@ jobs:
         run: gcloud auth configure-docker ${{ vars.GAR_LOCATION }}-docker.pkg.dev
 
       - name: Build Docker image
-        run: docker build -t "${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.GC_PROJECT_ID }}/${{ vars.GAR_REPOSITORY }}/phasesync_image:latest" ./src/PhaseSync
+        run: docker build -t "${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.GC_PROJECT_ID }}/${{ vars.GAR_REPOSITORY }}/phasesync_image:latest" .
 
       - name: Delete old Docker images
         continue-on-error: true
