@@ -75,7 +75,7 @@ namespace PhaseSync.Blazor.Data
 
                         foreach (var existingTarget in new PhasedTargetCollection(hive))
                         {
-                            polarSession.Send(new DeleteTarget(hive, existingTarget)).RunSynchronously();
+                            Task.Run(() => polarSession.Send(new DeleteTarget(hive, existingTarget))).GetAwaiter().GetResult();
                         }
 
                         var target = new TAOTarget(hive, workout!.ToString());
