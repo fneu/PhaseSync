@@ -14,7 +14,7 @@ namespace PhaseSync.Core.Units
                 MapOf.New(
                     KvpOf.New("IMPERIAL", () => (distanceInM / 1609.34).ToString("F1", CultureInfo.InvariantCulture) + " mi")
                 ),
-                unknown => (distanceInM / 1000).ToString("F1", CultureInfo.InvariantCulture) + " km"
+                unknown => (distanceInM / 1000).ToString("F1", CultureInfo.InvariantCulture) + "km"
             )[new ZoneUnit.Has(settings).Value() ? new ZoneUnit.Of(settings).Value() : "METRIC"],
             false
         )
