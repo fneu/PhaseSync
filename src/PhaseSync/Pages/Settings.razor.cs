@@ -36,6 +36,8 @@ namespace PhaseSync.Blazor.Pages
         public string PolarEmail { get; set; } = "";
         public string PolarPassword { get; set; } = "";
 
+        public string TAOToken { get; set; } = "";
+
         [Inject] ISnackbar Snackbar { get; set; }
         MudForm form;
         MudForm form2;
@@ -94,6 +96,11 @@ namespace PhaseSync.Blazor.Pages
                 this.Radius = new ZoneRadius.Of(UserSettings).Value();
             }
             this.SyncEnabled = new EnableSync.Of(UserSettings).Value();
+
+            if (new TaoToken.Has(this.UserSettings).Value())
+            {
+                TAOToken = new TaoToken.Of(this.UserSettings).Value();
+            }
 
             this.CheckSettings();
         }
@@ -207,6 +214,13 @@ namespace PhaseSync.Blazor.Pages
                 );
                 this.SyncEnabled = false;
             }
+        }
+
+        private void SetTAOToken()
+        {
+            this.UserSettings.Update(
+               new TaoToken(this.TAOToken)
+            );
         }
     }
 }

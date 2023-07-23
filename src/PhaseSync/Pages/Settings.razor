@@ -50,6 +50,23 @@
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@AuthorizeTAO">Connect</MudButton>
                         </MudStack>
                     }
+                    
+
+                    <MudForm @ref="@form" @bind-IsValid="@PolarFormValid">
+                        <MudTextField
+                            T="string"
+                            Label="Token"
+                            Required="true"
+                            RequiredError="Token is required!"
+                            Class="mt-3" 
+                            @bind-Value="@TAOToken" />
+                        <MudStack Row=true Class="justify-space-between pt-4">
+                            <MudText></MudText>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@SetTAOToken">Manually Change Token</MudButton>
+                        </MudStack>
+                    </MudForm>
+
+
                 </ChildContent>
             </MudExpansionPanel>
             <MudExpansionPanel>
