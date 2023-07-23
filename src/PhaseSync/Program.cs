@@ -22,6 +22,7 @@ using PhaseSync.Core.Outgoing.TAO;
 using System.Text.Json.Nodes;
 using PhaseSync.Core.Zones;
 using System.Net;
+using LettuceEncrypt;
 
 namespace PhaseSync
 {
@@ -44,7 +45,10 @@ namespace PhaseSync
             builder.Services.AddHostedService<BackgroundSyncService>();
             builder.Services.Configure<PhaseSyncOptions>(builder.Configuration.GetSection("PhaseSync"));
             builder.Services.AddMudServices();
-            builder.Services.AddLettuceEncrypt();
+            builder.Services.AddLettuceEncrypt().PersistDataToDirectory(
+                new DirectoryInfo(builder.Configuration.GetSection("PhaseSync").GetValue<string>("HiveDirectory")!).Parent!,
+                builder.Configuration.GetSection("PhaseSync").GetValue<string>("PasswordEncryptionSecret")!
+            );
 
             builder.WebHost.UseKestrel(k =>
             {
