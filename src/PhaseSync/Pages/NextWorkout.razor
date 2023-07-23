@@ -9,10 +9,34 @@
             </CardHeaderContent>
         </MudCardHeader>
         <MudCardContent>
-            <MudText>@Workout.ToString()</MudText>
+            @if(Workout is not null)
+            {
+                <MudText>@Workout!.ToString()</MudText>
+            }
+            else
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+            }
         </MudCardContent>
         <MudCardActions>
-            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@SendToPolar">Push to Polar Flow</MudButton>
+            @if (SettingsComplete)
+            {
+                <MudButton
+                    Variant="Variant.Text"
+                    Color="Color.Primary"
+                    Disabled="@(Workout is null)"
+                    OnClick="@SendToPolar">Push to Polar Flow</MudButton>
+            }
+            else
+            {
+                <MudAlert Severity="Severity.Error">
+                    Please complete all settings on the
+                    <MudLink Href="/settings" Typo="Typo.body2" Color="Color.Inherit"><b>settings</b></MudLink>
+                    page in order to upload this workout to Polar Flow.
+                </MudAlert>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" Disabled="true">Push to Polar Flow</MudButton>
+            }
+
         </MudCardActions>
     </MudCard>
     

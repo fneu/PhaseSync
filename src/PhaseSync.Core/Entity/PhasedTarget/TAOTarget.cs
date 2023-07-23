@@ -1,4 +1,4 @@
-﻿using PhaseSync.Core.Entity.PhasedTarget.Facets;
+﻿using PhaseSync.Core.Entity.Phase;
 using PhaseSync.Core.Entity.PhasedTarget.Input;
 using PhaseSync.Core.Entity.Settings;
 using PhaseSync.Core.Units;
@@ -17,7 +17,7 @@ namespace PhaseSync.Core.Entity.PhasedTarget
 
         public TAOTarget(IHive userHive, JsonNode taoWorkout) : base(() =>
         {
-            var target = new PhasedTargetOf(userHive, (string)taoWorkout["id"]!);
+            var target = new PhasedTargetOf(userHive, ((string)taoWorkout["id"]!).Replace("/", "_"));
             var settings = new SettingsOf(userHive);
 
             var steps = taoWorkout["workoutSteps"]!;
@@ -27,10 +27,14 @@ namespace PhaseSync.Core.Entity.PhasedTarget
                 new Description(
                     new HumanReadableDuration((int)taoWorkout["duration"]!).AsString(),
                     new HumanReadableDistance((double)taoWorkout["distance"]!, settings).AsString(),
+                    "synced " + TimeZoneInfo.ConvertTimeFromUtc(
+                        DateTime.UtcNow,
+                        TimeZoneInfo.FindSystemTimeZoneById("Europe/Berlin") // TODO: Use Timezone here, too
+                    ).ToString("ddd, HH:mm"),
                     "---"),
                 new Phases(
-                    new Yaapii.Atoms.Enumerable.Mapped<JsonNode, JsonNode>(
-                        x => new Phase(x, settings).Value(),
+                    new Yaapii.Atoms.Enumerable.Mapped<JsonNode, IEntity<IXocument>>(
+                        x => new TAOJsonAsPhase(x, target.Memory(), settings).Value(),
                         taoWorkout["workoutSteps"]!.AsArray()!
                     )
                 )

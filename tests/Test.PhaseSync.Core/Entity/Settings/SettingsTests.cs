@@ -128,5 +128,16 @@ namespace Test.PhaseSync.Core.Entity.Settings
             Assert.True(new ZoneUnit.Has(settings).Value());
             Assert.Equal(setUnit, new ZoneUnit.Of(settings).Value());
         }
+        
+        [Fact]
+        public void StoresSortedZoneBounds()
+        {
+            var settings = new SettingsOf(new RamHive(TESTUSERID));
+            settings.Update(new ZoneLowerBounds(new double[] { 1, 2, 3, 5, 4}));
+
+            Assert.True(new ZoneLowerBounds.Has(settings).Value());
+            Assert.Equal(new double[] { 1, 2, 3, 4, 5}, new ZoneLowerBounds.Of(settings).ToArray());
+        }
+
     }
 }
