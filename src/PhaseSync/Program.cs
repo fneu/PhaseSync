@@ -21,6 +21,7 @@ using PhaseSync.Core.Entity.PhasedTarget;
 using PhaseSync.Core.Outgoing.TAO;
 using System.Text.Json.Nodes;
 using PhaseSync.Core.Zones;
+using System.Net;
 
 namespace PhaseSync
 {
@@ -42,6 +43,18 @@ namespace PhaseSync
             builder.Services.AddScoped<HiveService>();
             builder.Services.Configure<PhaseSyncOptions>(builder.Configuration.GetSection("PhaseSync"));
             builder.Services.AddMudServices();
+            builder.Services.AddLettuceEncrypt();
+
+            builder.WebHost.UseKestrel(k =>
+            {
+                IServiceProvider appServices = k.ApplicationServices;
+                k.Listen(
+                    IPAddress.Any, 443,
+                    o => o.UseHttps(h =>
+                    {
+                        h.UseLettuceEncrypt(appServices);
+                    }));
+            });
 
             var app = builder.Build();
 
@@ -63,7 +76,7 @@ namespace PhaseSync
                 dbContext.Database.Migrate();
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 
