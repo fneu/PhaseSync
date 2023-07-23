@@ -39,6 +39,7 @@ namespace PhaseSync.Blazor.Data
             var workoutsSynced = 0;
             var zone_failures = 0;
             var errors = 0;
+            var errorMessages = new List<string>();
 
             foreach(var userId in 
                 new Mapped<string, string>(
@@ -64,6 +65,7 @@ namespace PhaseSync.Blazor.Data
                         else
                         {
                             errors++;
+                            errorMessages.Add(workoutResult.ErrorMsg());
                             continue;
                         }
                         var polarSession =
@@ -119,15 +121,21 @@ namespace PhaseSync.Blazor.Data
                         else
                         {
                             errors++;
+                            errorMessages.Add(result.ErrorMsg());
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     errors++;
+                    errorMessages.Add(ex.Message);
                 }
             }
             Console.WriteLine($"BACKGROUNDSYNC: Attempted: {attempted}, Succeeded: {workoutsSynced}, Zone Failures: {zone_failures}, Errors: {errors}");
+            foreach (var errorMessage in errorMessages)
+            {
+                Console.WriteLine($"BACKGROUNDSYNC: Error: {errorMessage}");
+            }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
