@@ -1,6 +1,7 @@
 ﻿using PhaseSync.Core.Entity;
 using PhaseSync.Core.Entity.Phase;
 using PhaseSync.Core.Entity.PhasedTarget.Input;
+using PhaseSync.Core.Outgoing.Polar.Facets;
 using System.Text;
 using System.Text.Json.Nodes;
 using Xive;
@@ -27,7 +28,7 @@ namespace PhaseSync.Core.Outgoing.Polar
             {
                 ["type"] = "PHASED",
                 ["name"] = new Title.Of(target).Value(),
-                ["description"] = new Description.Of(target).Value(),
+                ["description"] = new Description(target, settings).AsString(),
                 ["datetime"] = new Time.Of(target).Value(),
                 ["exerciseTargets"] = new JsonArray() {
                     new JsonObject()
@@ -42,8 +43,7 @@ namespace PhaseSync.Core.Outgoing.Polar
                             new Mapped<IEntity<IXocument>, JsonNode>(
                                 phase => new PhaseAsPolarJson(phase, target.Memory(), settings).Value(),
                                 new Phases.Of(target)
-                                
-                                ).ToArray()
+                            ).ToArray()
                         )
                     }
                 }

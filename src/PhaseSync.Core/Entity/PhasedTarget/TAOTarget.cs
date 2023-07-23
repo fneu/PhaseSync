@@ -24,14 +24,14 @@ namespace PhaseSync.Core.Entity.PhasedTarget
             target.Update(
                 new Title((string)taoWorkout["activitySubType"]!),
                 new Time((string)taoWorkout["start"]!, "Europe/Berlin"), // TODO: Get timezone from user settings
-                new Description(
-                    new HumanReadableDuration((int)taoWorkout["duration"]!).AsString(),
-                    new HumanReadableDistance((double)taoWorkout["distance"]!, settings).AsString(),
-                    "synced " + TimeZoneInfo.ConvertTimeFromUtc(
+                new ExpectedDistanceM((double)taoWorkout["distance"]!),
+                new ExpectedDurationS((int)taoWorkout["duration"]!),
+                new SyncedAt(
+                    TimeZoneInfo.ConvertTimeFromUtc(
                         DateTime.UtcNow,
                         TimeZoneInfo.FindSystemTimeZoneById("Europe/Berlin") // TODO: Use Timezone here, too
-                    ).ToString("ddd, HH:mm"),
-                    "---"),
+                    ).ToString("HH:mm")
+                ),
                 new Phases(
                     new Yaapii.Atoms.Enumerable.Mapped<JsonNode, IEntity<IXocument>>(
                         x => new TAOJsonAsPhase(x, target.Memory(), settings).Value(),
