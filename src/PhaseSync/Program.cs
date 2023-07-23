@@ -41,6 +41,7 @@ namespace PhaseSync
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             builder.Services.AddScoped<HiveService>();
+            builder.Services.AddHostedService<BackgroundSyncService>();
             builder.Services.Configure<PhaseSyncOptions>(builder.Configuration.GetSection("PhaseSync"));
             builder.Services.AddMudServices();
             builder.Services.AddLettuceEncrypt();
@@ -88,106 +89,6 @@ namespace PhaseSync
 
             app.MapBlazorHub();
             app.MapFallbackToPage("/_Host");
-
-            app.MapGet("/api/sync", async context =>
-            {
-                using var scope = context.RequestServices.CreateScope();
-                var options = scope.ServiceProvider.GetRequiredService<IOptions<PhaseSyncOptions>>().Value;
-
-                var attempted = 0;
-                var workoutsSynced = 0;
-                var zone_failures = 0;
-                var errors = 0;
-
-                foreach(var userId in 
-                    new Mapped<string, string>(
-                        dir => Path.GetFileName(dir),
-                        Directory.GetDirectories(options.HiveDirectory)
-                    )
-                )
-                {
-                    try
-                    {
-                        var hive = new FileHive(options.HiveDirectory, userId);
-                        var settings = new SettingsOf(hive);
-                        if (new SettingsComplete.Of(settings).Value() && new EnableSync.Of(settings).Value())
-                        {
-                            attempted++;
-
-                            var taoSession = new TAOSession(new TaoToken.Of(settings).Value());
-                            var workoutResult = await taoSession.Send(new GetUpcomingWorkout());
-                            JsonNode workout;
-                            if (workoutResult.Success()){
-                                workout = workoutResult.Content();
-                            }
-                            else
-                            {
-                                errors++;
-                                continue;
-                            }
-                            var polarSession =
-                                new PolarSession(
-                                    new PolarEmail.Of(settings).Value(),
-                                    new PolarPassword.Of(settings, options.PasswordEncryptionSecret).Value());
-
-                            foreach (var existingTarget in new PhasedTargetCollection(hive))
-                            {
-                                await polarSession.Send(new DeleteTarget(hive, existingTarget));
-                            }
-
-                            var target = new TAOTarget(hive, workout!.ToString());
-
-                            var sportProfileResult = await polarSession.Send(new GetRunningProfile());
-                            if (sportProfileResult.Success())
-                            {
-                                try
-                                {
-                                    var zones = new TargetZones(target, settings);
-                                    var zonesResult = await polarSession.Send(new PostZones(zones, sportProfileResult.Content().ToString(), settings));
-                                    if (zonesResult.Success())
-                                    {
-                                        settings.Update(
-                                            new ZoneLowerBounds(
-                                                new Mapped<IZone, double>(
-                                                    zone => zone.Min(),
-                                                    zones
-                                                ).ToArray()
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        zone_failures++;
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    zone_failures++;
-                                }
-                            }
-                            else
-                            {
-                                zone_failures++;
-                            }
-
-                            var result = await polarSession.Send(new PostTarget(target, settings));
-                            if (result.Success())
-                            {
-                                workoutsSynced++;
-                            }
-                            else
-                            {
-                                errors++;
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        errors++;
-                    }
-                }
-                await context.Response.WriteAsync($"Attempted: {attempted}, Succeeded: {workoutsSynced}, Zone Failures: {zone_failures}, Errors: {errors}");
-            });
 
             app.Run();
         }
