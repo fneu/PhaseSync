@@ -10,9 +10,17 @@ using PhaseSync.Core.Entity.Settings.Input;
 using PhaseSync.Core.Outgoing.Polar;
 using PhaseSync.Core.Outgoing.TAO;
 using PhaseSync.Core.Zones;
+using Plotly.Blazor.LayoutLib;
+using Plotly.Blazor.LayoutLib.ShapeLib;
+using Plotly.Blazor.Traces.ScatterLib;
+using Line = Plotly.Blazor.LayoutLib.ShapeLib.Line;
 using System.Text.Json.Nodes;
 using Xive;
 using Yaapii.Atoms.Enumerable;
+using Plotly.Blazor;
+using Plotly.Blazor.Traces;
+using Plotly.Blazor.ConfigLib;
+using Yaapii.Atoms.List;
 
 namespace PhaseSync.Blazor.Pages
 {
@@ -33,6 +41,120 @@ namespace PhaseSync.Blazor.Pages
         public string? Error { get; set; }
 
         public JsonNode? Workout { get; set; }
+
+        PlotlyChart chart;
+
+            Config config = new Config
+            {
+                Responsive = true,
+                StaticPlot=true,
+                DisplayModeBar=DisplayModeBarEnum.False
+            };
+
+            Layout layout = new Layout
+            {
+                YAxis = new List<YAxis>
+                {
+                    new YAxis
+                    {
+                        Title = new Plotly.Blazor.LayoutLib.YAxisLib.Title
+                        {
+                            Text = "Phases"
+                        }
+                    },
+                },
+                Shapes = new List<Shape>
+                {
+                    new Shape
+                    {
+                        Type = TypeEnum.Rect,
+                        XRef = "x",
+                        YRef = "y",
+                        X0 = 0,
+                        Y0 = 0,
+                        X1 = 5,
+                        Y1 = 12,
+                        FillColor = "#00ff00",
+                        Opacity = new decimal(0.5),
+                        Line = new Line
+                        {
+                            Width = 0
+                        }
+                    },
+                    new Shape
+                    {
+                        Type = TypeEnum.Rect,
+                        XRef = "x",
+                        YRef = "y",
+                        X0 = 5,
+                        Y0 = 0,
+                        X1 = 15,
+                        Y1 = 20,
+                        FillColor = "#ff0000",
+                        Opacity = new decimal(0.5),
+                        Line = new Line
+                        {
+                            Width = 0
+                        }
+                    },
+                    new Shape
+                    {
+                        Type = TypeEnum.Rect,
+                        XRef = "x",
+                        YRef = "y",
+                        X0 = 15,
+                        Y0 = 0,
+                        X1 = 35,
+                        Y1 = 12,
+                        FillColor = "#0000ff",
+                        Opacity = new decimal(0.5),
+                        Line = new Line
+                        {
+                            Width = 0
+                        }
+                    },
+                },
+                Height = 500
+            };
+
+        List<ITrace> data = new List<ITrace>
+            {
+                new Scatter
+                {
+                    Name = "Zone1",
+                    Mode = ModeFlag.Lines,
+                    X = new ListOf<object>(0, 35),
+                    Y = new ListOf<object>(4, 4)
+                },
+                new Scatter
+                {
+                    Name = "Zone2",
+                    Mode = ModeFlag.Lines,
+                    X = new ListOf<object>(0, 35),
+                    Y = new ListOf<object>(10, 10)
+                },
+                new Scatter
+                {
+                    Name = "Zone3",
+                    Mode = ModeFlag.Lines,
+                    X = new ListOf<object>(0, 35),
+                    Y = new ListOf<object>(12, 12)
+                },
+                new Scatter
+                {
+                    Name = "Zone4",
+                    Mode = ModeFlag.Lines,
+                    X = new ListOf<object>(0, 35),
+                    Y = new ListOf<object>(14, 14)
+                },
+                new Scatter
+                {
+                    Name = "Zone5",
+                    Mode = ModeFlag.Lines,
+                    X = new ListOf<object>(0, 35),
+                    Y = new ListOf<object>(16, 16)
+                },
+            };
 
         protected async override Task OnInitializedAsync()
         {
@@ -83,7 +205,7 @@ namespace PhaseSync.Blazor.Pages
                         {
                             settings.Update(
                                 new ZoneLowerBounds(
-                                    new Mapped<IZone, double>(
+                                    new Yaapii.Atoms.Enumerable.Mapped<IZone, double>(
                                         zone => zone.Min(),
                                         zones
                                     ).ToArray()
