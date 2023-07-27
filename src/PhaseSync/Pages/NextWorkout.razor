@@ -9,9 +9,9 @@
             </CardHeaderContent>
         </MudCardHeader>
         <MudCardContent>
-            <PlotlyChart @bind-Config="config" @bind-Layout="layout" Data="data" @ref="chart"/>
             @if(Workout is not null)
             {
+                <PlotlyChart @bind-Config="config" @bind-Layout="layout" Data="data"/>
                 <MudText>@Workout!.ToString()</MudText>
             }
             else
