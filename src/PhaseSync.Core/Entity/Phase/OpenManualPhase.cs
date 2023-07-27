@@ -13,6 +13,7 @@ namespace PhaseSync.Core.Entity.Phase
                 var phase = new PhaseOf(comb);
                 phase.Update(
                     new Duration((int)workoutStep["duration"]!),
+                    new Velocity((double)workoutStep["velocity"]!),
                     new Name((string)workoutStep["workoutStepType"]!)
                     );
                 return phase;
