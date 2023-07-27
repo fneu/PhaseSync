@@ -10,15 +10,15 @@ namespace Test.PhaseSync.Core.Entity.Phase.Input
         public void RetrievesDurationGoal()
         {
             var phase = new PhaseOf(new RamHive("test_user_id").Comb("test_program_id"), "test_phase_id");
-            phase.Update(new DurationGoal(300));
-            Assert.Equal(300, new DurationGoal.InSeconds(phase).Value());
+            phase.Update(new Duration(300));
+            Assert.Equal(300, new Duration.InSeconds(phase).Value());
         }
 
         [Fact]
         public void FallbackDurationGoal()
         {
             var phase = new PhaseOf(new RamHive("test_user_id").Comb("test_program_id"), "test_phase_id");
-            Assert.Equal(60, new DurationGoal.InSeconds(phase).Value());
+            Assert.Equal(60, new Duration.InSeconds(phase).Value());
         }
     }
 }

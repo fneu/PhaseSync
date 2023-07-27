@@ -43,7 +43,7 @@ namespace PhaseSync.Core.Entity.Phase
                     ["intensityType"] = new SpeedGoal.Has(phase).Value() ? "SPEED_ZONES" : null,
                     ["phaseChangeType"] = new PhaseChangeType.Of(phase).Value(),
                     ["goalType"] = new DistanceGoal.Has(phase).Value() ? "DISTANCE" : "DURATION",
-                    ["duration"] = new DistanceGoal.Has(phase).Value() ? "00:00:00" : new PolarDuration(new DurationGoal.InSeconds(phase).Value()).AsString(),
+                    ["duration"] = new DistanceGoal.Has(phase).Value() ? "00:00:00" : new PolarDuration(new Duration.InSeconds(phase).Value()).AsString(),
                     ["distance"] = new DistanceGoal.Has(phase).Value() ? new DistanceGoal.InMeters(phase).Value() : null,
                     ["name"] = new Name.Of(phase).AsString(),
                     ["phaseType"] = "PHASE"

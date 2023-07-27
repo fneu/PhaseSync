@@ -52,7 +52,7 @@ namespace PhaseSync.Core.Outgoing.Polar.Facets
             }
             else
             {
-                return $"{new HumanReadableDuration(new DurationGoal.InSeconds(phase).Value()).AsString()} @ {new Name.Of(phase).AsString()}";
+                return $"{new HumanReadableDuration(new Duration.InSeconds(phase).Value()).AsString()} @ {new Name.Of(phase).AsString()}";
             }
         }
     }

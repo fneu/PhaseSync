@@ -6,9 +6,9 @@ using Yaapii.Xambly;
 
 namespace PhaseSync.Core.Entity.Phase.Input
 {
-    public sealed class DurationGoal : EntityInputEnvelope<IXocument>
+    public sealed class Duration : EntityInputEnvelope<IXocument>
     {
-        public DurationGoal(int seconds) : base(
+        public Duration(int seconds) : base(
             xocument => xocument.Modify(
                 new Directives()
                     .Xpath("/*")

@@ -14,6 +14,7 @@ namespace PhaseSync.Core.Entity.Phase
                 phase.Update(
                     new SpeedGoal((double)workoutStep["velocity"]!),
                     new DistanceGoal((double)workoutStep["distance"]!),
+                    new Duration((int)workoutStep["duration"]!),
                     new Name(new Pace((double)workoutStep["velocity"]!, settings).AsString())
                     );
                 return phase;
