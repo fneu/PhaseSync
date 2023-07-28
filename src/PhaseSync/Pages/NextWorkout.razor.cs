@@ -47,6 +47,7 @@ namespace PhaseSync.Blazor.Pages
 
         public JsonNode? Workout { get; set; }
 
+        PlotlyChart chart;
         Config config = new()
         {
             Responsive = true,
@@ -65,7 +66,7 @@ namespace PhaseSync.Blazor.Pages
                         Text = "Minutes"
                     },
                     NTicks = 4,
-                    ShowGrid=false
+                    ShowGrid = false
                 }
             },
             YAxis = new List<YAxis>
@@ -76,7 +77,7 @@ namespace PhaseSync.Blazor.Pages
                     {
                         Text = "Paces"
                     },
-                    ShowGrid=true
+                    ShowGrid = true
                 },
                 new YAxis
                 {
@@ -86,13 +87,20 @@ namespace PhaseSync.Blazor.Pages
                     },
                     Side = Plotly.Blazor.LayoutLib.YAxisLib.SideEnum.Right,
                     Matches = "y",
-                    ShowTickLabels=true,
+                    ShowTickLabels = true,
                     Overlaying = "y",
-                    ShowGrid=false,
-                },
+                    ShowGrid = false,
+                }
             },
-            Height = 400,
             ShowLegend = false,
+            Margin= new Plotly.Blazor.LayoutLib.Margin
+            {
+                L = 50,
+                R = 50,
+                B = 40,
+                T = 0,
+                Pad = 4
+            },
         };
 
         List<ITrace> data = new() { };
@@ -214,8 +222,8 @@ namespace PhaseSync.Blazor.Pages
                     };
 
                     layout.YAxis[0].Range = new List<object>() {
-                        segmentVelocities.Min()-2*new ZoneRadius.Of(realSettings).Value(),
-                        segmentVelocities.Max()+2*new ZoneRadius.Of(realSettings).Value()
+                        segmentVelocities.Min()-new ZoneRadius.Of(realSettings).Value(),
+                        segmentVelocities.Max()+1.25*new ZoneRadius.Of(realSettings).Value()
                     };
 
                     layout.YAxis[0].TickMode = Plotly.Blazor.LayoutLib.YAxisLib.TickModeEnum.Array;

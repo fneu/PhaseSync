@@ -1,5 +1,8 @@
 ﻿@page "/nextworkout"
 @attribute [Authorize]
+
+<MudGrid Class="justify-center">
+<MudItem xs="12" md="7">
 @if (TAOConnected)
 {
     <MudCard>
@@ -11,7 +14,7 @@
         <MudCardContent>
             @if(Workout is not null)
             {
-                <PlotlyChart @bind-Config="config" @bind-Layout="layout" Data="data"/>
+                <PlotlyChart @bind-Config="config" @bind-Layout="layout" Data="data" @ref="chart" style="max-height: 170px"/>
                 <MudText>@Workout!.ToString()</MudText>
             }
             else
@@ -48,3 +51,5 @@
         Please fix this in the <MudLink Href="/settings" Typo="Typo.body2" Color="Color.Inherit"><b>settings</b></MudLink>.
     </MudAlert>
 }
+</MudItem>
+</MudGrid>
