@@ -122,8 +122,14 @@ namespace PhaseSync.Blazor.Pages
                     var hive = HiveService.UserHive().Result;
                     var realSettings = new SettingsOf(hive);
                     var ramHive = new RamHive("");
+                    var tempSettings = new SettingsOf(ramHive);
                     var target = new TAOTarget(ramHive, Workout!.ToString());
                     var zones = new TargetZones(target, realSettings);
+                    tempSettings.Update(
+                        new SetZones(true),
+                        new ZoneLowerBounds(Yaapii.Atoms.List.Mapped.New(zone => zone.Min(), zones).ToArray()),
+                        new ZoneRadius(new ZoneRadius.Of(realSettings).Value())
+                        );
 
                     var totalDuration = 0;
                     var segmentStarts = new List<double>();
@@ -145,8 +151,8 @@ namespace PhaseSync.Blazor.Pages
                                     segmentStarts.Add(totalDuration/60);
                                     totalDuration += new Duration.InSeconds(subPhase).Value();
                                     segmentEnds.Add(totalDuration/60);
-                                    segmentMins.Add(new SpeedGoal.Has(subPhase).Value() ? new SpeedGoal.LowerZone(subPhase, realSettings).Value() : -1);
-                                    segmentMaxs.Add(new SpeedGoal.Has(subPhase).Value() ? new SpeedGoal.UpperZone(subPhase, realSettings).Value() : -1);
+                                    segmentMins.Add(new SpeedGoal.Has(subPhase).Value() ? new SpeedGoal.LowerZone(subPhase, tempSettings).Value() : -1);
+                                    segmentMaxs.Add(new SpeedGoal.Has(subPhase).Value() ? new SpeedGoal.UpperZone(subPhase, tempSettings).Value() : -1);
                                     segmentVelocities.Add(new Velocity.InMPS(subPhase).Value());
                                     segmentVelocitiesObj.Add(new Velocity.InMPS(subPhase).Value());
                                 }
@@ -157,8 +163,8 @@ namespace PhaseSync.Blazor.Pages
                             segmentStarts.Add(totalDuration/60);
                             totalDuration += new Duration.InSeconds(phase).Value();
                             segmentEnds.Add(totalDuration/60);
-                            segmentMins.Add(new SpeedGoal.Has(phase).Value() ? new SpeedGoal.LowerZone(phase, realSettings).Value() : -1);
-                            segmentMaxs.Add(new SpeedGoal.Has(phase).Value() ? new SpeedGoal.UpperZone(phase, realSettings).Value() : -1);
+                            segmentMins.Add(new SpeedGoal.Has(phase).Value() ? new SpeedGoal.LowerZone(phase, tempSettings).Value() : -1);
+                            segmentMaxs.Add(new SpeedGoal.Has(phase).Value() ? new SpeedGoal.UpperZone(phase, tempSettings).Value() : -1);
                             segmentVelocities.Add(new Velocity.InMPS(phase).Value());
                             segmentVelocitiesObj.Add(new Velocity.InMPS(phase).Value());
                         }
