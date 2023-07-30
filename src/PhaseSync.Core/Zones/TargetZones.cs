@@ -2,6 +2,7 @@
 using PhaseSync.Core.Entity.Settings.Input;
 using PhaseSync.Core.Zones.Facets;
 using Xive;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.List;
 
 namespace PhaseSync.Core.Zones
@@ -15,7 +16,7 @@ namespace PhaseSync.Core.Zones
             {
                 // unique initial zones
                 var zones = new List<IZone>(
-                    new Mapped<double, IZone>(
+                    new Yaapii.Atoms.Enumerable.Mapped<double, IZone>(
                         speed => new Around(speed, settings),
                         new TargetSpeeds(target)
                     )
@@ -89,6 +90,14 @@ namespace PhaseSync.Core.Zones
                     zones.InsertRange(max_overlap_index, new ListOf<IZone>(below, new_zone, above));
                     overlaps--;
                 }
+
+                // remove mini-zones
+                zones = new List<IZone>(
+                    Filtered.New(
+                        zone => zone.Max() - zone.Min() > 0.05,
+                        zones
+                    )
+                );
 
                 // if we ended up (or started) with less than 5 zones,
                 // try to shift some in gaps
