@@ -41,6 +41,9 @@ namespace PhaseSync.Blazor.Pages
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
 
+        [Inject]
+        private IDialogService DialogService { get; set; }
+
         public IEntity<IProps> UserSettings { get; set; } = default!;
         public bool TAOConnected { get; set; } = false;
         public bool SettingsComplete { get; set; } = false;
@@ -91,12 +94,7 @@ namespace PhaseSync.Blazor.Pages
                         new PolarEmail.Of(settings).Value(),
                         new PolarPassword.Of(settings, PhaseSyncOptions.Value.PasswordEncryptionSecret).Value());
 
-                foreach (var existingTarget in new PhasedTargetCollection(hive))
-                {
-                    await polarSession.Send(new DeleteTarget(hive, existingTarget));
-                }
-
-                var target = new TAOTarget(hive, workout.Workout);
+                var target = new TAOTarget(new RamHive(""), workout.Workout);
 
                 var sportProfileResult = await polarSession.Send(new GetRunningProfile());
                 if (sportProfileResult.Success())
@@ -140,6 +138,22 @@ namespace PhaseSync.Blazor.Pages
                 else
                 {
                     Snackbar.Add($"Upload failed: {result.ErrorMsg()}", Severity.Error);
+                }
+
+                if (new EnableSync.Of(settings).Value() && new SetZones.Of(settings).Value())
+                {
+                    await DialogService.ShowMessageBox(
+                        "Warning", 
+                        (MarkupString) "Background sync and setting of zones is enabled. This will <b>regularily overwrite your Polar speed zones</b> according to the next upcoming workout, affecting this manually uploaded workout.<br>Consider disabling background sync in settings!", 
+                        yesText:"OK"
+                    );
+                } else if (new EnableSync.Of(settings).Value())
+                {
+                    await DialogService.ShowMessageBox(
+                        "Warning",
+                        (MarkupString) "Background sync is enabled. This manually uploaded workout will not be overwritten, but additional versions of this workout will be synced once the start time expected by TrainAsONE changes.<br>Consider disabling background sync in settings!",
+                        yesText: "OK"
+                    );
                 }
             }
             catch (Exception ex)

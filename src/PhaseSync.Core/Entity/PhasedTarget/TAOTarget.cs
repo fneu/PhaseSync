@@ -9,16 +9,30 @@ namespace PhaseSync.Core.Entity.PhasedTarget
 {
     public sealed class TAOTarget : EntityEnvelope<IHoneyComb>
     {
+
         public TAOTarget(IHive userHive, string taoWorkout) : this(
             userHive,
             JsonNode.Parse(taoWorkout)!
         )
         { }
 
-        public TAOTarget(IHive userHive, JsonNode taoWorkout) : base(() =>
+        public TAOTarget(IHive userHive, JsonNode taoWorkout) : this(
+            userHive,
+            taoWorkout,
+            new SettingsOf(userHive)
+        )
+        { }
+
+        public TAOTarget(IHive userHive, string taoWorkout, IEntity<IProps> settings) : this(
+            userHive,
+            JsonNode.Parse(taoWorkout)!,
+            settings
+        )
+        { }
+
+        public TAOTarget(IHive userHive, JsonNode taoWorkout, IEntity<IProps> settings) : base(() =>
         {
             var target = new PhasedTargetOf(userHive, ((string)taoWorkout["id"]!).Replace("/", "_"));
-            var settings = new SettingsOf(userHive);
 
             var steps = taoWorkout["workoutSteps"]!;
             target.Update(
