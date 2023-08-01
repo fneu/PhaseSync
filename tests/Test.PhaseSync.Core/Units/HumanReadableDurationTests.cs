@@ -7,13 +7,13 @@ namespace Test.PhaseSync.Core.Units
         [Fact]
         public void ConvertsShortDuration()
         {
-            Assert.Equal("43min", new HumanReadableDuration(2580).AsString());
+            Assert.Equal("43min", new CompactHumanReadableDuration(2580).AsString());
         }
 
         [Fact]
         public void ConvertsLongDuration()
         {
-            Assert.Equal("1h 23min", new HumanReadableDuration(5000).AsString());
+            Assert.Equal("1h 23min", new CompactHumanReadableDuration(5000).AsString());
         }
     }
 }

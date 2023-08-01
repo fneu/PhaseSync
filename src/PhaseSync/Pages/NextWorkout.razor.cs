@@ -26,6 +26,7 @@ using PhaseSync.Core.Entity.PhasedTarget.Input;
 using PhaseSync.Core.Entity.Phase.Input;
 using PhaseSync.Core.Entity.Phase;
 using PhaseSync.Core.Units;
+using PhaseSync.Blazor.Models;
 
 namespace PhaseSync.Blazor.Pages
 {
@@ -45,9 +46,8 @@ namespace PhaseSync.Blazor.Pages
         public bool SettingsComplete { get; set; } = false;
         public string? Error { get; set; }
 
-        public JsonNode? Workout { get; set; }
+        public IEnumerable<UIWorkout>? Workouts { get; set; }
 
-        PlotlyChart chart;
         Config config = new()
         {
             Responsive = true,
@@ -55,55 +55,6 @@ namespace PhaseSync.Blazor.Pages
             DisplayModeBar=DisplayModeBarEnum.False
         };
 
-        Layout layout = new()
-        {
-            XAxis = new List<XAxis>
-            {
-                new XAxis
-                {
-                    Title = new Plotly.Blazor.LayoutLib.XAxisLib.Title
-                    {
-                        Text = "Minutes"
-                    },
-                    NTicks = 4,
-                    ShowGrid = false
-                }
-            },
-            YAxis = new List<YAxis>
-            {
-                new YAxis
-                {
-                    Title = new Plotly.Blazor.LayoutLib.YAxisLib.Title
-                    {
-                        Text = "Paces"
-                    },
-                    ShowGrid = true
-                },
-                new YAxis
-                {
-                    Title = new Plotly.Blazor.LayoutLib.YAxisLib.Title
-                    {
-                        Text = "Zones",
-                    },
-                    Side = Plotly.Blazor.LayoutLib.YAxisLib.SideEnum.Right,
-                    Matches = "y",
-                    ShowTickLabels = true,
-                    Overlaying = "y",
-                    ShowGrid = false,
-                }
-            },
-            ShowLegend = false,
-            Margin= new Plotly.Blazor.LayoutLib.Margin
-            {
-                L = 50,
-                R = 50,
-                B = 40,
-                T = 0,
-                Pad = 4
-            },
-        };
-
-        List<ITrace> data = new() { };
 
         protected async override Task OnInitializedAsync()
         {
@@ -114,158 +65,22 @@ namespace PhaseSync.Blazor.Pages
             if (TAOConnected)
             {
                 var taoSession = new TAOSession(new TaoToken.Of(UserSettings).Value());
-                var workoutResult = await taoSession.Send(new GetUpcomingWorkout());
-                if (workoutResult.Success())
+                var workoutResultArray = await taoSession.Send(new GetUpcomingWorkouts());
+                if (workoutResultArray.Success())
                 {
-                    Workout = workoutResult.Content();
-
-                    var hive = HiveService.UserHive().Result;
-                    var realSettings = new SettingsOf(hive);
-                    var ramHive = new RamHive("");
-                    var tempSettings = new SettingsOf(ramHive);
-                    var target = new TAOTarget(ramHive, Workout!.ToString());
-                    var zones = new TargetZones(target, realSettings);
-                    tempSettings.Update(
-                        new SetZones(true),
-                        new ZoneLowerBounds(Yaapii.Atoms.List.Mapped.New(zone => zone.Min(), zones).ToArray()),
-                        new ZoneRadius(new ZoneRadius.Of(realSettings).Value())
-                        );
-
-                    var totalDuration = 0;
-                    var segmentStarts = new List<double>();
-                    var segmentEnds = new List<double>();
-                    var segmentMins = new List<int>();
-                    var segmentMaxs = new List<int>();
-                    var segmentVelocities = new List<double>();
-                    var segmentVelocitiesObj = new List<object>();
-
-                    foreach (var phase in new Phases.Of(target))
-                    {
-                        if (new SubPhases.Has(phase).Value())
-                        {
-                            for (int i = 0; i < new SubPhases.RepeatCount(phase).Value(); i++)
-                            {
-                                foreach (var subPhaseID in new SubPhases.IDs(phase))
-                                {
-                                    var subPhase = new PhaseOf(target.Memory(), subPhaseID);
-                                    segmentStarts.Add(totalDuration/60);
-                                    totalDuration += new Duration.InSeconds(subPhase).Value();
-                                    segmentEnds.Add(totalDuration/60);
-                                    segmentMins.Add(new SpeedGoal.Has(subPhase).Value() ? new SpeedGoal.LowerZone(subPhase, tempSettings).Value() : -1);
-                                    segmentMaxs.Add(new SpeedGoal.Has(subPhase).Value() ? new SpeedGoal.UpperZone(subPhase, tempSettings).Value() : -1);
-                                    segmentVelocities.Add(new Velocity.InMPS(subPhase).Value());
-                                    segmentVelocitiesObj.Add(new Velocity.InMPS(subPhase).Value());
-                                }
-                            }
-                        }
-                        else
-                        {
-                            segmentStarts.Add(totalDuration/60);
-                            totalDuration += new Duration.InSeconds(phase).Value();
-                            segmentEnds.Add(totalDuration/60);
-                            segmentMins.Add(new SpeedGoal.Has(phase).Value() ? new SpeedGoal.LowerZone(phase, tempSettings).Value() : -1);
-                            segmentMaxs.Add(new SpeedGoal.Has(phase).Value() ? new SpeedGoal.UpperZone(phase, tempSettings).Value() : -1);
-                            segmentVelocities.Add(new Velocity.InMPS(phase).Value());
-                            segmentVelocitiesObj.Add(new Velocity.InMPS(phase).Value());
-                        }
-                    }
-
-                    var colors = new List<string>() { "#72e88b", "#37dbdb", "#08ccf9", "#0face7", "#1280db" };
-                    var shapes = new List<Shape>();
-                    // zones
-                    for (int s = 0; s < segmentStarts.Count; s++)
-                    {
-                        for (int i = 0; i < 5; i++)
-                        {
-                            shapes.Add(
-                                new Shape
-                                {
-                                    Type = TypeEnum.Rect,
-                                    XRef = "x",
-                                    YRef = "y2",
-                                    X0 = segmentStarts[s],
-                                    Y0 = zones[i].Min(),
-                                    X1 = segmentEnds[s],
-                                    Y1 = zones[i].Max(),
-                                    FillColor = colors[i],
-                                    Opacity = ((segmentMins[s] <= i + 1) && (segmentMaxs[s] >= i + 1)) ? new decimal(0.45) : new decimal(0.15),
-                                    Line = new Line
-                                    {
-                                        Width = 0,
-                                    }
-                                }
-                            );
-                        }
-                    }
-                    layout.Shapes = shapes;
-
-                    var x = new List<object>() { };
-                    var y = new List<object>() { };
-                    for (int i = 0; i < segmentStarts.Count; i++)
-                    {
-                        x.Add(segmentStarts[i]);
-                        y.Add(segmentVelocities[i]);
-                        x.Add(segmentEnds[i]);
-                        y.Add(segmentVelocities[i]);
-                    }
-
-
-                    data = new List<ITrace>()
-                    {
-                        new Scatter
-                        {
-                            Name = "Velocity",
-                            Mode = ModeFlag.Lines,
-                            X = x,
-                            Y = y,
-                            Line = new Plotly.Blazor.Traces.ScatterLib.Line
-                            {
-                                Color = "#2d4ed3",
-                                Width = 2
-                            },
-                        },
-
-                    };
-
-                    layout.YAxis[0].Range = new List<object>() {
-                        segmentVelocities.Min()-new ZoneRadius.Of(realSettings).Value(),
-                        segmentVelocities.Max()+1.25*new ZoneRadius.Of(realSettings).Value()
-                    };
-
-                    layout.YAxis[0].TickMode = Plotly.Blazor.LayoutLib.YAxisLib.TickModeEnum.Array;
-                    layout.YAxis[0].TickVals = segmentVelocitiesObj;
-                    layout.YAxis[0].TickText = new List<object>(
-                        new Yaapii.Atoms.Enumerable.Mapped<double, string>(
-                            mps => new Pace(mps, realSettings).AsString(),
-                            segmentVelocities)
-                        );
-
-
-                    layout.YAxis[1].TickMode = Plotly.Blazor.LayoutLib.YAxisLib.TickModeEnum.Array;
-                    var zoneTicksDouble = new List<double>();
-                    var zoneTicksObject = new List<object>();
-                    foreach (var zone in zones)
-                    {
-                        zoneTicksDouble.Add(zone.Min());
-                        zoneTicksDouble.Add(zone.Max());
-                        zoneTicksObject.Add(zone.Min());
-                        zoneTicksObject.Add(zone.Max());
-                    }
-                    layout.YAxis[1].TickVals = zoneTicksObject;
-                    layout.YAxis[1].TickText = new List<object>(
-                        new Yaapii.Atoms.Enumerable.Mapped<double, string>(
-                            mps => new Pace(mps, realSettings).AsString(),
-                            zoneTicksDouble)
-                        );
+                    this.Workouts = new Yaapii.Atoms.Enumerable.Mapped<JsonNode, UIWorkout>(
+                        json => new UIWorkout(json, this.UserSettings),
+                        workoutResultArray.Content().AsArray()!
+                    );
                 }
                 else
                 {
-                    Error = workoutResult.ErrorMsg();
+                    Error = workoutResultArray.ErrorMsg();
                 }
             }
         }
 
-        public async void SendToPolar()
+        public async Task SendToPolar(UIWorkout workout)
         {
             try
             {
@@ -281,7 +96,7 @@ namespace PhaseSync.Blazor.Pages
                     await polarSession.Send(new DeleteTarget(hive, existingTarget));
                 }
 
-                var target = new TAOTarget(hive, Workout!.ToString());
+                var target = new TAOTarget(hive, workout.Workout);
 
                 var sportProfileResult = await polarSession.Send(new GetRunningProfile());
                 if (sportProfileResult.Success())

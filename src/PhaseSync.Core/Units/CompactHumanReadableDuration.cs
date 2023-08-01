@@ -2,27 +2,27 @@
 
 namespace PhaseSync.Core.Units
 {
-    public sealed class HumanReadableDuration : TextEnvelope
+    public sealed class CompactHumanReadableDuration : TextEnvelope
     {
-        public HumanReadableDuration(int seconds) : base(() =>
+        public CompactHumanReadableDuration(int seconds) : base(() =>
             {
                 var t = TimeSpan.FromSeconds(seconds);
                 if (t.Hours > 0)
                 {
-                    return string.Format("{0} hours {1} minutes", t.Hours, t.Minutes);
+                    return string.Format("{0}h {1}min", t.Hours, t.Minutes);
                 }
                 else if (t.Minutes == 0)
                 {
-                    return string.Format("{0} seconds", t.Seconds);
+                    return string.Format("{0}s", t.Seconds);
                 }
                 else {
                     if (t.Seconds == 0)
                     {
-                        return string.Format("{0} minutes", t.Minutes);
+                        return string.Format("{0}min", t.Minutes);
                     }
                     else
                     {
-                        return string.Format("{0} minutes {1} seconds", t.Minutes, t.Seconds);
+                        return string.Format("{0}min {1}s", t.Minutes, t.Seconds);
                     }
                 }
             },

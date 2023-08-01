@@ -15,8 +15,8 @@ namespace PhaseSync.Core.Outgoing.Polar.Facets
             {
                 var lines = new List<string>()
                 {
-                    new HumanReadableDuration(new ExpectedDurationS.Of(target).Value()).AsString(),
-                    new HumanReadableDistance(new ExpectedDistanceM.Of(target).Value(), settings).AsString(),
+                    new CompactHumanReadableDuration(new ExpectedDurationS.Of(target).Value()).AsString(),
+                    new CompactHumanReadableDistance(new ExpectedDistanceM.Of(target).Value(), settings).AsString(),
                     "synced " + new SyncedAt.Of(target).AsString(),
                     "",
                     "--- Phases ---"
@@ -48,11 +48,11 @@ namespace PhaseSync.Core.Outgoing.Polar.Facets
         {
             if (new DistanceGoal.Has(phase).Value())
             {
-                return $"{new HumanReadableDistance(new DistanceGoal.InMeters(phase).Value(), settings).AsString()} @ {new Name.Of(phase).AsString()}";
+                return $"{new CompactHumanReadableDistance(new DistanceGoal.InMeters(phase).Value(), settings).AsString()} @ {new Name.Of(phase).AsString()}";
             }
             else
             {
-                return $"{new HumanReadableDuration(new Duration.InSeconds(phase).Value()).AsString()} @ {new Name.Of(phase).AsString()}";
+                return $"{new CompactHumanReadableDuration(new Duration.InSeconds(phase).Value()).AsString()} @ {new Name.Of(phase).AsString()}";
             }
         }
     }

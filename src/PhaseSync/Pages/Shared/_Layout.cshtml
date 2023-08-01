@@ -34,7 +34,7 @@
 	<script defer src="_content/MudBlazor/MudBlazor.min.js"></script>
 	<link rel="stylesheet" href="~/WebApplication3.styles.css" asp-append-version="true"/>
 	@(await Html.RenderComponentAsync<MudThemeProvider>(RenderMode.Static))
-    <component type="typeof(MudThemeProvider)" render-mode="Static", param-Theme="@(new MudTheme(){Palette = new Palette() {Primary = Colors.Teal.Default, Secondary = Colors.Amber.Darken2, AppbarBackground= Colors.Teal.Default}})" />
+    <component type="typeof(MudThemeProvider)" render-mode="Static", param-Theme="@(new MudTheme(){Palette = new Palette() {Primary = Colors.Teal.Default, Secondary = Colors.Amber.Darken2, AppbarBackground= Colors.Teal.Default, Background=Colors.Grey.Lighten4}})" />
     <component type="typeof(MudDialogProvider)" render-mode="Static" />
     <component type="typeof(MudSnackbarProvider)" render-mode="Static" />
 </head>

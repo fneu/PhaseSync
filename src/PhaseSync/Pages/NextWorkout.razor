@@ -2,54 +2,98 @@
 @attribute [Authorize]
 
 <MudGrid Class="justify-center">
-<MudItem xs="12" md="7">
-@if (TAOConnected)
-{
-    <MudCard>
-        <MudCardHeader>
-            <CardHeaderContent>
-                <MudText Typo="Typo.h6">Upcoming workout</MudText>
-            </CardHeaderContent>
-        </MudCardHeader>
-        <MudCardContent>
-            @if(Workout is not null)
-            {
-                <PlotlyChart @bind-Config="config" @bind-Layout="layout" Data="data" @ref="chart" style="max-height: 170px"/>
-                <MudText>@Workout!.ToString()</MudText>
-            }
-            else
-            {
-                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
-            }
-        </MudCardContent>
-        <MudCardActions>
-            @if (SettingsComplete)
-            {
-                <MudButton
-                    Variant="Variant.Text"
-                    Color="Color.Primary"
-                    Disabled="@(Workout is null)"
-                    OnClick="@SendToPolar">Push to Polar Flow</MudButton>
-            }
-            else
+    <MudItem xs="12" md="7">
+        @if (Error is not null)
+        {
+            <MudAlert Severity="Severity.Error">
+                There has been an error when fetching upcoming workouts: @Error
+            </MudAlert>
+        }
+        @if (TAOConnected)
+        {
+            @if (!SettingsComplete)
             {
                 <MudAlert Severity="Severity.Error">
                     Please complete all settings on the
                     <MudLink Href="/settings" Typo="Typo.body2" Color="Color.Inherit"><b>settings</b></MudLink>
-                    page in order to upload this workout to Polar Flow.
+                    page in order to upload workouts to Polar Flow.
                 </MudAlert>
-                <MudButton Variant="Variant.Text" Color="Color.Primary" Disabled="true">Push to Polar Flow</MudButton>
             }
-
-        </MudCardActions>
-    </MudCard>
-    
-} else
-{
-    <MudAlert Severity="Severity.Error">
-        It looks like you have not yet granted PhaseSync access to your TrainAsONE Workouts.
-        Please fix this in the <MudLink Href="/settings" Typo="Typo.body2" Color="Color.Inherit"><b>settings</b></MudLink>.
-    </MudAlert>
-}
-</MudItem>
+            @if (Workouts is not null)
+            {
+                <MudStack Spacing="3">
+                    @foreach (var workout in Workouts)
+                    {
+                        <MudCard>
+                            <MudCardHeader>
+                                <CardHeaderAvatar>
+                                    <MudAvatar Color="Color.Secondary">
+                                        <MudIcon Icon=@workout.Icon />
+                                    </MudAvatar>
+                                </CardHeaderAvatar>
+                                <CardHeaderContent>
+                                    <div Class="d-flex flex-row justify-space-between align-center">
+                                        <div Class="flex-shrink-0">
+                                            <MudText Typo="Typo.body1">@workout.Title</MudText>
+                                            <MudText Typo="Typo.body2">@workout.NiceDate</MudText>
+                                        </div>
+                                        <div style="text-align: right">
+                                            <MudChip Icon="@Icons.Material.Outlined.Timer" Label="true" Color="Color.Default">@workout.NiceDuration</MudChip>
+                                            <MudChip Icon="@Icons.Material.Filled.Timeline" Label="true" Color="Color.Default">@workout.NiceDistance</MudChip>
+                                        </div>
+                                    </div>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <PlotlyChart @bind-Config="config" @bind-Layout=@workout.Layout Data=@workout.Data style="max-height: 170px" />
+                                <MudStack Row="true" Justify="Justify.SpaceBetween" class="px-4">
+                                    <MudText Typo="Typo.caption">Paces</MudText>
+                                    <MudText Typo="Typo.caption">Minutes</MudText>
+                                    <MudText Typo="Typo.caption">Zones</MudText>
+                                </MudStack>
+                                <MudText Typo="Typo.subtitle1" class="ps-4 pt-4">Run Steps:</MudText>
+                                <MudList Clickable="false" Dense="true">
+                                    @foreach(var step in workout.Steps)
+                                    {
+                                        @if (step.subSteps.Count() > 0){
+                                            <MudListItem Icon="@Icons.Material.Filled.RunCircle" IconSize="Size.Small" Text=@step.description InitiallyExpanded="true">
+                                                <NestedList>
+                                                    @foreach(var subStep in step.subSteps)
+                                                    {
+                                                        <MudListItem Icon="@Icons.Material.Outlined.RunCircle" IconSize="Size.Small" Dense="true">
+                                                            @subStep
+                                                        </MudListItem>
+                                                    }
+                                                </NestedList>
+                                            </MudListItem>
+                                        }
+                                        else
+                                        {
+                                        
+                                            <MudListItem Icon="@Icons.Material.Filled.RunCircle" IconSize="Size.Small" Text=@step.description/>
+                                        }
+                                    }
+                                </MudList>
+                            </MudCardContent>
+                            <MudCardActions>
+                                <MudButton Variant="Variant.Text"
+                               Color="Color.Primary"
+                               Disabled="@(!SettingsComplete)"
+                               OnClick="@(async() => await SendToPolar(workout))">
+                                    Sync to Polar Flow
+                                </MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    }
+                </MudStack>
+            }
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Error">
+                It looks like you have not yet granted PhaseSync access to your TrainAsONE Workouts.
+                Please fix this in the <MudLink Href="/settings" Typo="Typo.body2" Color="Color.Inherit"><b>settings</b></MudLink>.
+            </MudAlert>
+        }
+    </MudItem>
 </MudGrid>
