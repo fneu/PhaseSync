@@ -52,7 +52,7 @@ namespace PhaseSync.Blazor.Models
                 new ZoneLowerBounds(Yaapii.Atoms.List.Mapped.New(zone => zone.Min(), zones).ToArray())
             );
 
-            var totalDuration = 0;
+            float totalDuration = 0;
             var segmentStarts = new List<double>();
             var segmentEnds = new List<double>();
             var segmentMins = new List<int>();
