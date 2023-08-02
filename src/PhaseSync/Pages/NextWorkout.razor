@@ -19,74 +19,121 @@
                     page in order to upload workouts to Polar Flow.
                 </MudAlert>
             }
+            <MudStack Spacing="3">
             @if (Workouts is not null)
             {
-                <MudStack Spacing="3">
-                    @foreach (var workout in Workouts)
-                    {
-                        <MudCard>
-                            <MudCardHeader>
-                                <CardHeaderAvatar>
-                                    <MudAvatar Color="Color.Secondary">
-                                        <MudIcon Icon=@workout.Icon />
-                                    </MudAvatar>
-                                </CardHeaderAvatar>
-                                <CardHeaderContent>
-                                    <div Class="d-flex flex-row justify-space-between align-center">
-                                        <div Class="flex-shrink-0">
-                                            <MudText Typo="Typo.body1">@workout.Title</MudText>
-                                            <MudText Typo="Typo.body2">@workout.NiceDate</MudText>
-                                        </div>
-                                        <div style="text-align: right">
-                                            <MudChip Icon="@Icons.Material.Outlined.Timer" Label="true" Color="Color.Default">@workout.NiceDuration</MudChip>
-                                            <MudChip Icon="@Icons.Material.Filled.Timeline" Label="true" Color="Color.Default">@workout.NiceDistance</MudChip>
-                                        </div>
+                @foreach (var workout in Workouts)
+                {
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderAvatar>
+                                <MudAvatar Color="Color.Secondary">
+                                    <MudIcon Icon=@workout.Icon />
+                                </MudAvatar>
+                            </CardHeaderAvatar>
+                            <CardHeaderContent>
+                                <div Class="d-flex flex-row justify-space-between align-center">
+                                    <div Class="flex-shrink-0">
+                                        <MudText Typo="Typo.body1">@workout.Title</MudText>
+                                        <MudText Typo="Typo.body2">@workout.NiceDate</MudText>
                                     </div>
-                                </CardHeaderContent>
-                            </MudCardHeader>
-                            <MudCardContent>
-                                <PlotlyChart @bind-Config="config" @bind-Layout=@workout.Layout Data=@workout.Data style="max-height: 170px" />
-                                <MudStack Row="true" Justify="Justify.SpaceBetween" class="px-4">
-                                    <MudText Typo="Typo.caption">Paces</MudText>
-                                    <MudText Typo="Typo.caption">Minutes</MudText>
-                                    <MudText Typo="Typo.caption">Zones</MudText>
-                                </MudStack>
-                                <MudText Typo="Typo.subtitle1" class="ps-4 pt-4">Run Steps:</MudText>
-                                <MudList Clickable="false" Dense="true">
-                                    @foreach(var step in workout.Steps)
-                                    {
-                                        @if (step.subSteps.Count() > 0){
-                                            <MudListItem Icon="@Icons.Material.Filled.RunCircle" IconSize="Size.Small" Text=@step.description InitiallyExpanded="true">
-                                                <NestedList>
-                                                    @foreach(var subStep in step.subSteps)
-                                                    {
-                                                        <MudListItem Icon="@Icons.Material.Outlined.RunCircle" IconSize="Size.Small" Dense="true">
-                                                            @subStep
-                                                        </MudListItem>
-                                                    }
-                                                </NestedList>
-                                            </MudListItem>
-                                        }
-                                        else
-                                        {
-                                        
-                                            <MudListItem Icon="@Icons.Material.Filled.RunCircle" IconSize="Size.Small" Text=@step.description/>
-                                        }
+                                    <div style="text-align: right">
+                                        <MudChip Icon="@Icons.Material.Outlined.Timer" Label="true" Color="Color.Default">@workout.NiceDuration</MudChip>
+                                        <MudChip Icon="@Icons.Material.Filled.Timeline" Label="true" Color="Color.Default">@workout.NiceDistance</MudChip>
+                                    </div>
+                                </div>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <PlotlyChart @bind-Config="config" @bind-Layout=@workout.Layout Data=@workout.Data style="max-height: 170px" />
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" class="px-4">
+                                <MudText Typo="Typo.caption">Paces</MudText>
+                                <MudText Typo="Typo.caption">Minutes</MudText>
+                                <MudText Typo="Typo.caption">Zones</MudText>
+                            </MudStack>
+                            <MudText Typo="Typo.subtitle1" class="ps-4 pt-4">Run Steps:</MudText>
+                            <MudList Clickable="false" Dense="true">
+                                @foreach(var step in workout.Steps)
+                                {
+                                    @if (step.subSteps.Count() > 0){
+                                        <MudListItem Icon="@Icons.Material.Filled.RunCircle" IconSize="Size.Small" Text=@step.description InitiallyExpanded="true">
+                                            <NestedList>
+                                                @foreach(var subStep in step.subSteps)
+                                                {
+                                                    <MudListItem Icon="@Icons.Material.Outlined.RunCircle" IconSize="Size.Small" Dense="true">
+                                                        @subStep
+                                                    </MudListItem>
+                                                }
+                                            </NestedList>
+                                        </MudListItem>
                                     }
-                                </MudList>
-                            </MudCardContent>
-                            <MudCardActions>
-                                <MudButton Variant="Variant.Text"
-                               Color="Color.Primary"
-                               Disabled="@(!SettingsComplete)"
-                               OnClick="@(async() => await SendToPolar(workout))">
-                                    Sync to Polar Flow
-                                </MudButton>
-                            </MudCardActions>
-                        </MudCard>
-                    }
-                </MudStack>
+                                    else
+                                    {
+                                    
+                                        <MudListItem Icon="@Icons.Material.Filled.RunCircle" IconSize="Size.Small" Text=@step.description/>
+                                    }
+                                }
+                            </MudList>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Variant="Variant.Text"
+                           Color="Color.Primary"
+                           Disabled="@(!SettingsComplete)"
+                           OnClick="@(async() => await SendToPolar(workout))">
+                                Sync to Polar Flow
+                            </MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                }
             }
+            else
+            {
+
+                @for (var i=0; i<3; i++)
+                {
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderAvatar>
+                                <MudAvatar>
+                                    <MudSkeleton SkeletonType="SkeletonType.Circle" Height="40px" Width="40px"/>
+                                </MudAvatar>
+                            </CardHeaderAvatar>
+                            <CardHeaderContent>
+                                <div Class="d-flex flex-row justify-space-between align-center">
+                                    <div Class="flex-shrink-0">
+                                        <MudSkeleton Width="100px"/>
+                                        <MudSkeleton Width="60px"/>
+                                    </div>
+                                    <div style="text-align: right">
+                                        <MudSkeleton Height="32px" Width="95px" />
+                                        <MudSkeleton Height="32px" Width="92px" />
+                                    </div>
+                                </div>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudSkeleton Height="190px" Width="100%" />
+                            <MudSkeleton Width="100px" />
+                            <MudList Clickable="false" Dense="true">
+                                <MudListItem>
+                                    <MudSkeleton Width="60%" />
+                                </MudListItem>
+                                <MudListItem>
+                                    <MudSkeleton Width="60%" />
+                                </MudListItem>
+                                <MudListItem>
+                                    <MudSkeleton Width="60%" />
+                                </MudListItem>
+                            </MudList>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudSkeleton Height="36px" Width="170px" />
+                        </MudCardActions>
+                    </MudCard>
+                    
+                }
+            }
+            </MudStack>
         }
         else
         {
