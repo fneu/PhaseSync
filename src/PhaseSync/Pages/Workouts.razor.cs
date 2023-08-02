@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using MudBlazor;
 using PhaseSync.Blazor.Data;
+using PhaseSync.Blazor.Models;
 using PhaseSync.Blazor.Options;
 using PhaseSync.Core.Entity;
 using PhaseSync.Core.Entity.PhasedTarget;
@@ -10,27 +11,15 @@ using PhaseSync.Core.Entity.Settings.Input;
 using PhaseSync.Core.Outgoing.Polar;
 using PhaseSync.Core.Outgoing.TAO;
 using PhaseSync.Core.Zones;
-using Plotly.Blazor.LayoutLib;
-using Plotly.Blazor.LayoutLib.ShapeLib;
-using Plotly.Blazor.Traces.ScatterLib;
-using Line = Plotly.Blazor.LayoutLib.ShapeLib.Line;
+using Plotly.Blazor;
+using Plotly.Blazor.ConfigLib;
 using System.Text.Json.Nodes;
 using Xive;
-using Yaapii.Atoms.Enumerable;
-using Plotly.Blazor;
-using Plotly.Blazor.Traces;
-using Plotly.Blazor.ConfigLib;
-using Yaapii.Atoms.List;
 using Xive.Hive;
-using PhaseSync.Core.Entity.PhasedTarget.Input;
-using PhaseSync.Core.Entity.Phase.Input;
-using PhaseSync.Core.Entity.Phase;
-using PhaseSync.Core.Units;
-using PhaseSync.Blazor.Models;
 
 namespace PhaseSync.Blazor.Pages
 {
-    public partial class NextWorkout : ComponentBase
+    public partial class Workouts : ComponentBase
     {
         [Inject]
         public HiveService HiveService { get; set; } = default!;
@@ -49,13 +38,13 @@ namespace PhaseSync.Blazor.Pages
         public bool SettingsComplete { get; set; } = false;
         public string? Error { get; set; }
 
-        public IEnumerable<UIWorkout>? Workouts { get; set; }
+        public IEnumerable<UIWorkout>? Upcoming { get; set; }
 
         Config config = new()
         {
             Responsive = true,
-            StaticPlot=true,
-            DisplayModeBar=DisplayModeBarEnum.False
+            StaticPlot = true,
+            DisplayModeBar = DisplayModeBarEnum.False
         };
 
 
@@ -71,7 +60,7 @@ namespace PhaseSync.Blazor.Pages
                 var workoutResultArray = await taoSession.Send(new GetUpcomingWorkouts());
                 if (workoutResultArray.Success())
                 {
-                    this.Workouts = new Yaapii.Atoms.Enumerable.Mapped<JsonNode, UIWorkout>(
+                    this.Upcoming = new Yaapii.Atoms.Enumerable.Mapped<JsonNode, UIWorkout>(
                         json => new UIWorkout(json, this.UserSettings),
                         workoutResultArray.Content().AsArray()!
                     );
@@ -143,15 +132,16 @@ namespace PhaseSync.Blazor.Pages
                 if (new EnableSync.Of(settings).Value() && new SetZones.Of(settings).Value())
                 {
                     await DialogService.ShowMessageBox(
-                        "Warning", 
-                        (MarkupString) "Background sync and setting of zones is enabled. This will <b>regularily overwrite your Polar speed zones</b> according to the next upcoming workout, affecting this manually uploaded workout.<br>Consider disabling background sync in settings!", 
-                        yesText:"OK"
+                        "Warning",
+                        (MarkupString)"Background sync and setting of zones is enabled. This will <b>regularily overwrite your Polar speed zones</b> according to the next upcoming workout, affecting this manually uploaded workout.<br>Consider disabling background sync in settings!",
+                        yesText: "OK"
                     );
-                } else if (new EnableSync.Of(settings).Value())
+                }
+                else if (new EnableSync.Of(settings).Value())
                 {
                     await DialogService.ShowMessageBox(
                         "Warning",
-                        (MarkupString) "Background sync is enabled. This manually uploaded workout will not be overwritten, but additional versions of this workout will be synced once the start time expected by TrainAsONE changes.<br>Consider disabling background sync in settings!",
+                        (MarkupString)"Background sync is enabled. This manually uploaded workout will not be overwritten, but additional versions of this workout will be synced once the start time expected by TrainAsONE changes.<br>Consider disabling background sync in settings!",
                         yesText: "OK"
                     );
                 }

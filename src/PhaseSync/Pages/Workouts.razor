@@ -1,7 +1,7 @@
-﻿@page "/nextworkout"
+﻿@page "/workouts"
 @attribute [Authorize]
 
-<PageTitle>Upcoming - PhaseSync</PageTitle>
+<PageTitle>Workouts - PhaseSync</PageTitle>
 <MudGrid Class="justify-center pt-4 pt-sm-6 pt-md-16 mt-md-16">
     <MudItem xs="12" md="7">
         @if (Error is not null)
@@ -21,9 +21,9 @@
                 </MudAlert>
             }
             <MudStack Spacing="3">
-            @if (Workouts is not null)
+            @if (Upcoming is not null)
             {
-                @foreach (var workout in Workouts)
+                @foreach (var workout in Upcoming)
                 {
                     <MudCard>
                         <MudCardHeader>
