@@ -1,6 +1,51 @@
 ﻿@page "/"
 
+@using MudBlazor
+@using PhaseSync.Blazor
+@using PhaseSync.Blazor.Shared
+
 <PageTitle>PhaseSync</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true" Class="pt-16 mt-16">Hello, world!</MudText>
-<MudText Class="mb-8">PhaseSync syncs your TrainAsONE Workouts to Polar Flow!</MudText>
+<MudPaper Width="100%">
+    <MudContainer MaxWidth="MaxWidth.Medium">
+        <MudText Typo="Typo.h3" GutterBottom="true" Class="pt-16 mt-16">TrainAsONE workouts in Polar Flow</MudText>
+        <MudText Typo="Typo.subtitle1" Class="mb-8">Manual or periodic sync. Automatic calculations of pace zones for useful alerts. </MudText>
+        <MudStack Row="true" Justify="Justify.Center" class="pb-16">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="Identity/Account/Register">Get started</MudButton>
+            <MudButton Href="https://github.com/MudBlazor/MudBlazor"
+                       Target="_blank"
+                       Variant="Variant.Outlined"
+                       EndIcon="@Icons.Custom.Brands.GitHub"
+                       Color="Color.Primary">
+                Visit on GitHub
+            </MudButton>
+        </MudStack>
+    </MudContainer>
+</MudPaper>
+
+<MudGrid Width="100%" class="pt-8">
+    <MudItem xs="12" md="6">
+        <MudCard>
+            <MudCardContent>
+                <div class="d-flex justify-center">
+                    <MudImage ObjectFit="ObjectFit.Cover" ObjectPosition="ObjectPosition.Top" Height="300" Style="width:100%" Src="workout.png"/>
+                </div>
+                <MudText Typo="Typo.h5">TrainAsONE workout sync</MudText>
+                <MudText Typo="Typo.body2">Workouts are read from TrainAsONE via OAuth API.</MudText>
+                <MudText Typo="Typo.body2">Five zones are calculated to provide the best possible feedback during workouts.</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" md="6">
+        <MudCard>
+            <MudCardContent>
+                <div class="d-flex justify-center">
+                    <MudImage ObjectFit="ObjectFit.Cover" ObjectPosition="ObjectPosition.Top" Height="300" Style="width:100%" Src="flow.png"/>
+                </div>
+                <MudText Typo="Typo.h5">Polar Flow upload</MudText>
+                <MudText Typo="Typo.body2">Phased Targets are created in Polar Flow via logged in web session.</MudText>
+                <MudText Typo="Typo.body2">Periodic background sync updates the next upcoming workout and sets speed zones.</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
