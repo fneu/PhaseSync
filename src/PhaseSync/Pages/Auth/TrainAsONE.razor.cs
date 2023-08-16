@@ -47,7 +47,7 @@ namespace PhaseSync.Blazor.Pages.Auth
                     {"code", code[0]!},
                     {"client_id", "PhaseSync"},
                     {"client_secret", Options.Value.TAOClientSecret },
-                    {"redirect_uri", "http://phasesync.neuschmidt.de/auth/trainasone"}
+                    {"redirect_uri", "https://phasesync.neuschmidt.de/auth/trainasone"}
                 };
                 request.Content = new FormUrlEncodedContent(parameters);
 
