@@ -113,7 +113,7 @@ namespace PhaseSync.Blazor.Pages
             {
                 {"response_type", "code" },
                 {"client_id", "PhaseSync" },
-                {"redirect_uri", "http://localhost/auth/trainasone" },
+                {"redirect_uri", "http://phasesync.neuschmidt.de/auth/trainasone" },
                 {"scope", "WORKOUT" },
                 {"state", randomState }
             };
