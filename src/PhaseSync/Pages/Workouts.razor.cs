@@ -83,7 +83,7 @@ namespace PhaseSync.Blazor.Pages
                         new PolarEmail.Of(settings).Value(),
                         new PolarPassword.Of(settings, PhaseSyncOptions.Value.PasswordEncryptionSecret).Value());
 
-                var target = new TAOTarget(new RamHive(""), workout.Workout);
+                var target = new TAOTarget(new RamHive(""), workout.Workout, this.UserSettings);
 
                 var sportProfileResult = await polarSession.Send(new GetRunningProfile());
                 if (sportProfileResult.Success())
