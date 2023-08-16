@@ -215,12 +215,5 @@ namespace PhaseSync.Blazor.Pages
                 this.SyncEnabled = false;
             }
         }
-
-        private void SetTAOToken()
-        {
-            this.UserSettings.Update(
-               new TaoToken(this.TAOToken)
-            );
-        }
     }
 }
