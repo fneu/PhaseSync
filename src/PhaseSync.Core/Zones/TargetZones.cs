@@ -83,9 +83,27 @@ namespace PhaseSync.Core.Zones
                         }
                     }
 
-                    var new_zone = new InsideOverlap(zones[max_overlap_index], zones[max_overlap_index + 1]);
-                    var below = new Retreated(zones[max_overlap_index], new_zone);
-                    var above = new Retreated(zones[max_overlap_index + 1], new_zone);
+                    IZone below;
+                    IZone new_zone;
+                    IZone above;
+                    if (zones[max_overlap_index].Min() < zones[max_overlap_index + 1].Min() && zones[max_overlap_index].Max() > zones[max_overlap_index + 1].Max())
+                    {
+                        below = new ZoneOf(zones[max_overlap_index].Min(), zones[max_overlap_index + 1].Min());
+                        new_zone = zones[max_overlap_index + 1];
+                        above = new ZoneOf(zones[max_overlap_index + 1].Max(), zones[max_overlap_index].Max());
+                    }
+                    else if (zones[max_overlap_index].Min() > zones[max_overlap_index + 1].Min() && zones[max_overlap_index].Max() < zones[max_overlap_index + 1].Max())
+                    {
+                        below = new ZoneOf(zones[max_overlap_index + 1].Min(), zones[max_overlap_index].Min());
+                        new_zone = zones[max_overlap_index];
+                        above = new ZoneOf(zones[max_overlap_index].Max(), zones[max_overlap_index + 1].Max());
+                    }
+                    else
+                    {
+                        new_zone = new InsideOverlap(zones[max_overlap_index], zones[max_overlap_index + 1]);
+                        below = new Retreated(zones[max_overlap_index], new_zone);
+                        above = new Retreated(zones[max_overlap_index + 1], new_zone);
+                    }
                     zones.RemoveRange(max_overlap_index, 2);
                     zones.InsertRange(max_overlap_index, new ListOf<IZone>(below, new_zone, above));
                     overlaps--;
@@ -94,7 +112,7 @@ namespace PhaseSync.Core.Zones
                 // remove mini-zones
                 zones = new List<IZone>(
                     Filtered.New(
-                        zone => zone.Max() - zone.Min() > 0.05,
+                        zone => zone.Max() - zone.Min() > 0.03,
                         zones
                     )
                 );
